@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>EBG Creative — What if your brand matched your business?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #EDE8E2;
+      font-family: 'Jost', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .email-wrapper {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #FFFFFF;
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 4px 40px rgba(28,43,74,0.10);
+    }
+
+    /* ── HEADER ── */
+    .email-header {
+      background: #1C2B4A;
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .email-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 18px;
+      letter-spacing: 0.18em;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .email-logo span {
+      color: #D6E0F0;
+      font-style: italic;
+      font-weight: 300;
+    }
+    .header-tag {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(214,224,240,0.55);
+    }
+
+    /* ── HERO ── */
+    .email-hero {
+      background: #1C2B4A;
+      padding: 64px 48px 72px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-dots {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        radial-gradient(circle, rgba(214,224,240,0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(214,224,240,0.5);
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .hero-headline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 52px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .hero-headline em {
+      font-style: italic;
+      color: #D6E0F0;
+    }
+    .hero-rule {
+      width: 40px;
+      height: 1px;
+      background: rgba(214,224,240,0.3);
+      margin: 0 auto 28px;
+      position: relative;
+    }
+    .hero-sub {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.85;
+      letter-spacing: 0.06em;
+      color: rgba(214,224,240,0.7);
+      max-width: 380px;
+      margin: 0 auto 44px;
+      position: relative;
+    }
+    .hero-cta {
+      display: inline-block;
+      background: #FFFFFF;
+      color: #1C2B4A;
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 16px 36px;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .hero-cta:hover { background: #D6E0F0; }
+
+    /* ── INTRO ── */
+    .email-intro {
+      padding: 56px 48px 48px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #EDE8E2;
+    }
+    .intro-label {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: #7A99BF;
+      margin-bottom: 20px;
+    }
+    .intro-heading {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 34px;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      color: #1C2B4A;
+      margin-bottom: 20px;
+    }
+    .intro-heading em { font-style: italic; }
+    .intro-body {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 13.5px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: #4A5568;
+      max-width: 460px;
+    }
+
+    /* ── SERVICES ── */
+    .email-services {
+      padding: 48px 48px 52px;
+      background: #F8F9FC;
+    }
+    .services-label {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: #7A99BF;
+      margin-bottom: 32px;
+    }
+    .service-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid #EDE8E2;
+    }
+    .service-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .service-num {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 22px;
+      color: #D6E0F0;
+      line-height: 1;
+      min-width: 28px;
+      padding-top: 2px;
+    }
+    .service-text {}
+    .service-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 20px;
+      letter-spacing: -0.01em;
+      color: #1C2B4A;
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+    .service-desc {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 12.5px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: #6B7A90;
+    }
+
+    /* ── WHAT IF BAND ── */
+    .email-whatif {
+      background: #1C2B4A;
+      padding: 52px 48px;
+      text-align: center;
+    }
+    .whatif-line {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(214,224,240,0.4);
+      margin-bottom: 20px;
+    }
+    .whatif-question {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 38px;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: #FFFFFF;
+      margin-bottom: 36px;
+    }
+    .whatif-question em { font-style: italic; color: #D6E0F0; }
+    .whatif-cta {
+      display: inline-block;
+      border: 1px solid rgba(214,224,240,0.35);
+      color: #D6E0F0;
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 32px;
+    }
+
+    /* ── PLAYGROUND CALLOUT ── */
+    .email-playground {
+      padding: 52px 48px;
+      background: #EDE8E2;
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    .playground-badge {
+      min-width: 72px;
+      height: 72px;
+      background: #1C2B4A;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .playground-badge span {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #D6E0F0;
+      text-align: center;
+      line-height: 1.4;
+    }
+    .playground-copy {}
+    .playground-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: 22px;
+      color: #1C2B4A;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+    .playground-title em { font-style: italic; }
+    .playground-desc {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: #4A5568;
+      margin-bottom: 14px;
+    }
+    .playground-link {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #1C2B4A;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(28,43,74,0.3);
+      padding-bottom: 2px;
+    }
+
+    /* ── FOOTER ── */
+    .email-footer {
+      background: #1C2B4A;
+      padding: 36px 48px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 15px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 12px;
+    }
+    .footer-tagline {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      color: rgba(214,224,240,0.3);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .footer-links {
+      margin-bottom: 20px;
+    }
+    .footer-links a {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.14em;
+      color: rgba(214,224,240,0.45);
+      text-decoration: none;
+      margin: 0 12px;
+      text-transform: uppercase;
+    }
+    .footer-unsub {
+      font-family: 'Jost', Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      color: rgba(214,224,240,0.2);
+      letter-spacing: 0.08em;
+    }
+    .footer-unsub a {
+      color: rgba(214,224,240,0.35);
+      text-decoration: underline;
+    }
+
+    /* Mobile */
+    @media (max-width: 620px) {
+      .email-wrapper { margin: 0; border-radius: 0; }
+      .email-header, .email-hero, .email-intro,
+      .email-services, .email-whatif, .email-playground,
+      .email-footer { padding-left: 28px; padding-right: 28px; }
+      .hero-headline { font-size: 38px; }
+      .intro-heading { font-size: 28px; }
+      .email-playground { flex-direction: column; gap: 20px; }
+      .whatif-question { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="email-wrapper">
+
+  <!-- HEADER -->
+  <div class="email-header">
+    <a class="email-logo" href="https://ebgcreative.com">EBG <span>Creative</span></a>
+    <span class="header-tag">Ontario, Canada</span>
+  </div>
+
+  <!-- HERO -->
+  <div class="email-hero">
+    <div class="hero-dots"></div>
+    <p class="hero-eyebrow">A message from EBG Creative</p>
+    <h1 class="hero-headline">Your brand should feel<br>like <em>you.</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Most small businesses grow into something wonderful — and stay trapped behind a brand that still looks like where they started.</p>
+    <a href="https://calendly.com/hello-ebgcreative/30min" class="hero-cta">Book a free discovery call</a>
+  </div>
+
+  <!-- INTRO -->
+  <div class="email-intro">
+    <p class="intro-label">Who we are</p>
+    <h2 class="intro-heading">We help small businesses build brands that <em>mean something.</em></h2>
+    <p class="intro-body">EBG Creative is a boutique creative studio based in Ontario. We work with small businesses and startups who are ready to stop blending in — and start showing up as exactly what they've built. No bloated agency retainers. No cookie-cutter templates. Just thoughtful, strategic creative work made for you.</p>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="email-services">
+    <p class="services-label">What we do</p>
+
+    <div class="service-item">
+      <span class="service-num">01</span>
+      <div class="service-text">
+        <p class="service-name">Brand Identity</p>
+        <p class="service-desc">Logo, colour palette, typography, brand voice — built from the ground up to reflect who you are and where you're going.</p>
+      </div>
+    </div>
+
+    <div class="service-item">
+      <span class="service-num">02</span>
+      <div class="service-text">
+        <p class="service-name">Brand Refresh</p>
+        <p class="service-desc">Already have a brand but it's not quite right? We take what exists, figure out what's working, and evolve it into something you're proud to show.</p>
+      </div>
+    </div>
+
+    <div class="service-item">
+      <span class="service-num">03</span>
+      <div class="service-text">
+        <p class="service-name">Visual Direction</p>
+        <p class="service-desc">Photography direction, content styling, and visual guidelines so your brand stays consistent everywhere — online and off.</p>
+      </div>
+    </div>
+
+    <div class="service-item">
+      <span class="service-num">04</span>
+      <div class="service-text">
+        <p class="service-name">Collateral & Design</p>
+        <p class="service-desc">Business cards, packaging, social templates, pitch decks — the tangible things that make a brand feel real and professional.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WHAT IF BAND -->
+  <div class="email-whatif">
+    <p class="whatif-line">The question worth asking</p>
+    <h2 class="whatif-question">What if your brand was the reason<br>people chose <em>you?</em></h2>
+    <a href="https://calendly.com/hello-ebgcreative/30min" class="whatif-cta">Let's find out — book a free call</a>
+  </div>
+
+  <!-- PLAYGROUND CALLOUT -->
+  <div class="email-playground">
+    <div class="playground-badge">
+      <span>The<br>Play<br>ground</span>
+    </div>
+    <div class="playground-copy">
+      <p class="playground-title">Try it before you <em>commit.</em></p>
+      <p class="playground-desc">Not sure where to start? The Playground is a free interactive brand builder on our site. Pick your colours, find your fonts, and see what your brand could feel like — no sign-up, no strings.</p>
+      <a href="https://ebgcreative.com" class="playground-link">Explore the Playground →</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="email-footer">
+    <p class="footer-logo">EBG Creative</p>
+    <p class="footer-tagline">The space between where you are and where you're going.</p>
+    <div class="footer-links">
+      <a href="https://ebgcreative.com">Website</a>
+      <a href="https://calendly.com/hello-ebgcreative/30min">Book a Call</a>
+      <a href="mailto:hello@ebgcreative.com">Email Us</a>
+    </div>
+    <p class="footer-unsub">You're receiving this because you were identified as a potential fit for EBG Creative's work.<br><a href="#">Unsubscribe</a></p>
+  </div>
+
+</div>
+
+</body>
+</html>

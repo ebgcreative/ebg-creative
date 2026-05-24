@@ -722,159 +722,229 @@ footer {
   inset: 0;
   display: flex;
 }
-/* BEFORE panel */
+/* BEFORE panel — well@work yellow/white wellness */
 .ba-before {
-  background: #f2f2f0;
+  background: #ffffff;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  gap: 18px;
+  overflow: hidden;
   box-sizing: border-box;
 }
-.ba-before-logo {
-  font-family: 'Times New Roman', serif;
-  font-size: clamp(20px, 3vw, 36px);
-  color: #333;
-  text-align: center;
-  line-height: 1.2;
-}
-.ba-before-sub {
-  font-family: Arial, sans-serif;
-  font-size: clamp(8px, 1.1vw, 13px);
-  color: #888;
-  letter-spacing: 0.05em;
-  text-align: center;
-}
-.ba-before-divider {
-  width: 60px;
-  height: 1px;
-  background: #ccc;
-}
-.ba-before-swatches {
+/* Before: header top bar */
+.ww-b-header {
+  background: #F5D600;
   display: flex;
-  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5% 0 2.5%;
+  height: 13%;
+  border-bottom: 1.5px solid #E0C800;
+  flex-shrink: 0;
 }
-.ba-before-swatch {
-  width: 28px;
-  height: 28px;
-  border-radius: 2px;
+.ww-b-logo {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(9px, 1.4vw, 16px);
+  font-weight: 400;
+  color: #111;
+  letter-spacing: -0.01em;
 }
-.ba-before-card {
-  width: 52%;
-  max-width: 260px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  padding: 14px 18px;
-  text-align: center;
+.ww-b-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.ba-before-card-name {
-  font-family: Arial, sans-serif;
-  font-size: clamp(11px, 1.4vw, 15px);
+.ww-b-bag {
+  font-size: clamp(7px, 0.9vw, 11px);
   color: #333;
-  font-weight: bold;
-  margin-bottom: 4px;
 }
-.ba-before-card-title {
+.ww-b-cta-btn {
   font-family: Arial, sans-serif;
-  font-size: clamp(7px, 0.9vw, 10px);
-  color: #999;
-  text-transform: uppercase;
+  font-size: clamp(5px, 0.7vw, 9px);
   letter-spacing: 0.08em;
-  margin-bottom: 10px;
+  border: 1.5px solid #111;
+  padding: 4px 10px;
+  color: #111;
+  background: transparent;
+  white-space: nowrap;
 }
-.ba-before-card-line {
-  height: 1px;
-  background: #eee;
-  margin: 8px 0;
+/* Before: nav bar */
+.ww-b-nav {
+  background: #F5D600;
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 1.2vw, 18px);
+  padding: 0 2.5%;
+  height: 8%;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
 }
-.ba-before-card-contact {
+.ww-b-nav span {
   font-family: Arial, sans-serif;
-  font-size: clamp(6px, 0.8vw, 9px);
-  color: #bbb;
+  font-size: clamp(4px, 0.6vw, 8px);
+  letter-spacing: 0.06em;
+  color: #111;
+  white-space: nowrap;
 }
-/* AFTER panel */
-.ba-after {
-  position: absolute;
-  inset: 0;
-  background: #EDE8E2;
+.ww-b-nav-right {
+  margin-left: auto;
+  opacity: 0.7;
+}
+/* Before: hero */
+.ww-b-hero {
+  flex: 1;
+  background: #f8f8f6;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+.ww-b-people {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(8px, 3vw, 40px);
+  width: 100%;
+  height: 100%;
+  padding: 0 4%;
+}
+.ww-b-person {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 32px;
-  gap: 16px;
-  box-sizing: border-box;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 3%;
+}
+.ww-b-head {
+  width: clamp(14px, 2.8vw, 34px);
+  height: clamp(14px, 2.8vw, 34px);
+  border-radius: 50%;
+  background: #c8bfb0;
+  flex-shrink: 0;
+}
+.ww-b-body {
+  width: clamp(22px, 4.5vw, 54px);
+  height: clamp(50px, 12vw, 150px);
+  border-radius: clamp(8px, 1.5vw, 18px) clamp(8px, 1.5vw, 18px) 0 0;
+  background: linear-gradient(180deg, #d8d0c8 0%, #c0b8b0 100%);
+}
+/* AFTER panel — dark/gold tennis rebrand */
+.ba-after {
+  position: absolute;
+  inset: 0;
+  background: #1a1a18;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   clip-path: inset(0 50% 0 0);
   transition: clip-path 0s;
 }
-.ba-after-eyebrow {
-  font-family: 'Jost', sans-serif;
-  font-size: clamp(6px, 0.9vw, 10px);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #9FA8DA;
-}
-.ba-after-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-weight: 300;
-  font-size: clamp(22px, 3.5vw, 48px);
-  color: #1C2B4A;
-  text-align: center;
-  line-height: 1.1;
-}
-.ba-after-divider {
-  width: 36px;
-  height: 1px;
-  background: #9FA8DA;
-}
-.ba-after-swatches {
+/* After: header */
+.ww-a-header {
+  background: #111110;
   display: flex;
-  gap: 5px;
+  align-items: center;
+  gap: clamp(6px, 1.2vw, 16px);
+  padding: 0 2.5%;
+  height: 20%;
+  flex-shrink: 0;
+  border-bottom: 1.5px solid #C9A84C;
 }
-.ba-after-swatch {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
+.ww-a-logo {
+  font-family: Arial, sans-serif;
+  font-size: clamp(8px, 1.3vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  white-space: nowrap;
+  margin-right: auto;
 }
-.ba-after-card {
-  width: 52%;
-  max-width: 260px;
-  background: #1C2B4A;
-  border-radius: 3px;
-  padding: 16px 20px;
+.ww-a-icon {
+  font-style: normal;
+  color: #C9A84C;
+  margin-right: 4px;
+}
+.ww-a-nav {
+  display: flex;
+  gap: clamp(5px, 1vw, 14px);
+}
+.ww-a-nav span {
+  font-family: Arial, sans-serif;
+  font-size: clamp(4px, 0.65vw, 8px);
+  color: rgba(255,255,255,0.85);
+  white-space: nowrap;
+}
+.ww-a-nav-ul {
+  text-decoration: underline;
+}
+.ww-a-cta-btn {
+  font-family: Arial, sans-serif;
+  font-size: clamp(4px, 0.6vw, 7px);
+  letter-spacing: 0.06em;
+  background: #C9A84C;
+  color: #111;
+  padding: 5px 8px;
+  white-space: nowrap;
+  font-weight: 700;
   text-align: center;
+  line-height: 1.3;
 }
-.ba-after-card-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-style: italic;
-  font-size: clamp(13px, 1.8vw, 20px);
-  color: white;
-  margin-bottom: 2px;
+.ww-a-bag {
+  font-size: clamp(7px, 1vw, 13px);
+  color: #fff;
 }
-.ba-after-card-title {
-  font-family: 'Jost', sans-serif;
-  font-size: clamp(6px, 0.75vw, 9px);
-  color: #9FA8DA;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  margin-bottom: 10px;
+/* After: hero */
+.ww-a-hero {
+  flex: 1;
+  background: linear-gradient(135deg, #2a2e1e 0%, #1e2218 40%, #181c10 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
-.ba-after-card-line {
-  height: 1px;
-  background: rgba(255,255,255,0.12);
-  margin: 8px 0;
+.ww-a-lines {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    -55deg,
+    transparent,
+    transparent 28px,
+    rgba(255,255,255,0.03) 28px,
+    rgba(255,255,255,0.03) 29px
+  );
 }
-.ba-after-card-contact {
-  font-family: 'Jost', sans-serif;
-  font-size: clamp(6px, 0.75vw, 9px);
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 0.05em;
+.ww-a-copy {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(8px, 2vw, 24px);
+}
+.ww-a-title {
+  font-family: Arial Black, Arial, sans-serif;
+  font-size: clamp(10px, 2.2vw, 28px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.ww-a-work-btn {
+  font-family: Arial, sans-serif;
+  font-size: clamp(5px, 0.8vw, 10px);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  background: #C9A84C;
+  color: #111;
+  padding: clamp(4px, 0.8vw, 10px) clamp(10px, 2.5vw, 30px);
+  display: inline-block;
 }
 /* labels */
 .ba-panel-label {
@@ -1924,44 +1994,51 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
   <!-- BEFORE / AFTER TRANSFORMATION -->
   <section class="ba-section">
     <div class="ba-header">
-      <span class="ba-label">The transformation</span>
+      <span class="ba-label">Client work</span>
       <h2 class="ba-title">From wherever you are<br>to <em>where you belong.</em></h2>
-      <p class="ba-sub">This is what it looks like when a brand steps into itself. Drag to see the difference.</p>
+      <p class="ba-sub">A full rebrand for well@work — same company, completely new direction. Drag to see the difference.</p>
     </div>
     <div class="ba-slider-wrap" id="baSliderWrap">
-      <!-- BEFORE -->
+      <!-- BEFORE: yellow/white wellness site -->
       <div class="ba-panel ba-before">
-        <div class="ba-before-logo">Sarah's<br>Bakery</div>
-        <div class="ba-before-divider"></div>
-        <div class="ba-before-swatches">
-          <div class="ba-before-swatch" style="background:#c8c8c8;"></div>
-          <div class="ba-before-swatch" style="background:#e8e8e8;"></div>
-          <div class="ba-before-swatch" style="background:#333;"></div>
+        <div class="ww-b-header">
+          <span class="ww-b-logo">well@work</span>
+          <div class="ww-b-actions">
+            <span class="ww-b-bag">🛍 0</span>
+            <span class="ww-b-cta-btn">BOOK A SESSION</span>
+          </div>
         </div>
-        <div class="ba-before-card">
-          <div class="ba-before-card-name">Sarah Mitchell</div>
-          <div class="ba-before-card-title">Owner</div>
-          <div class="ba-before-card-line"></div>
-          <div class="ba-before-card-contact">sarah@sarahsbakery.com<br>sarahsbakery.com</div>
+        <div class="ww-b-nav">
+          <span>HOME</span><span>ABOUT US</span><span>SERVICES</span>
+          <span>OUR CLIENTS</span><span>CONTACT US</span><span>SHOP</span>
+          <span class="ww-b-nav-right">INFO@WELLATWORKINC.COM</span>
         </div>
-        <div class="ba-before-sub">Est. 2019 · Home Bakery</div>
+        <div class="ww-b-hero">
+          <div class="ww-b-people">
+            <div class="ww-b-person"><div class="ww-b-head"></div><div class="ww-b-body"></div></div>
+            <div class="ww-b-person"><div class="ww-b-head"></div><div class="ww-b-body"></div></div>
+            <div class="ww-b-person"><div class="ww-b-head"></div><div class="ww-b-body"></div></div>
+            <div class="ww-b-person"><div class="ww-b-head"></div><div class="ww-b-body"></div></div>
+          </div>
+        </div>
       </div>
-      <!-- AFTER -->
+      <!-- AFTER: dark/gold tennis rebrand -->
       <div class="ba-panel ba-after" id="baAfter">
-        <div class="ba-after-eyebrow">Maison Sarah</div>
-        <div class="ba-after-logo">Artisan<br>Pâtisserie</div>
-        <div class="ba-after-divider"></div>
-        <div class="ba-after-swatches">
-          <div class="ba-after-swatch" style="background:#C9A87C;"></div>
-          <div class="ba-after-swatch" style="background:#EDE8E2;"></div>
-          <div class="ba-after-swatch" style="background:#1C2B4A;"></div>
-          <div class="ba-after-swatch" style="background:#9FA8DA;"></div>
+        <div class="ww-a-header">
+          <span class="ww-a-logo"><span class="ww-a-icon">⟋</span> WELL@WORK</span>
+          <div class="ww-a-nav">
+            <span>Home</span><span class="ww-a-nav-ul">Clinics</span><span>Programs</span>
+            <span>Guides</span><span>About</span><span>Shop</span>
+          </div>
+          <span class="ww-a-cta-btn">BOOK AN INJURY ASSESSMENT</span>
+          <span class="ww-a-bag">🛍</span>
         </div>
-        <div class="ba-after-card">
-          <div class="ba-after-card-name">Sarah Mitchell</div>
-          <div class="ba-after-card-title">Founder &amp; Pastry Artist</div>
-          <div class="ba-after-card-line"></div>
-          <div class="ba-after-card-contact">hello@maisonsarah.com</div>
+        <div class="ww-a-hero">
+          <div class="ww-a-lines" aria-hidden="true"></div>
+          <div class="ww-a-copy">
+            <h3 class="ww-a-title">Serving Your Racquet<br>Sports Injuries</h3>
+            <span class="ww-a-work-btn">WORK WITH US</span>
+          </div>
         </div>
       </div>
       <!-- Labels -->

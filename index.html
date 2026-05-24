@@ -1647,6 +1647,44 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
   footer               { padding: 40px 20px; }
   .footer-links        { gap: 16px; }
 }
+
+/* Shop coming soon */
+.shop-coming {
+  display: inline-block;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--steel-blue);
+  border: 1px solid var(--periwinkle);
+  padding: 6px 14px;
+  border-radius: 2px;
+  pointer-events: none;
+}
+.shop-launch-notice {
+  max-width: 900px;
+  margin: 0 auto 40px;
+  padding: 16px 28px;
+  background: var(--soft-mist);
+  border-left: 3px solid var(--steel-blue);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-radius: 2px;
+}
+.shop-launch-icon {
+  color: var(--steel-blue);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.shop-launch-notice p {
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  color: var(--dusk);
+  line-height: 1.6;
+  margin: 0;
+}
+
 </style>
 </head>
 <body>
@@ -2085,6 +2123,10 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <p class="page-sub">Downloadable templates and guides built for small businesses who are ready to show up.</p>
   </section>
 
+  <div class="shop-launch-notice">
+    <span class="shop-launch-icon">✦</span>
+    <p>The shop is launching soon — payment processing is on its way. Check back shortly.</p>
+  </div>
   <div class="shop-grid">
     <div class="shop-card reveal">
       <div class="shop-img linen"><svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" style="width:72%;max-width:220px;">
@@ -2102,7 +2144,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <p class="shop-desc">Not sure where to start with your brand? This 26-item checklist walks you through everything you need to build your brand from the ground up.</p>
         <div class="shop-bottom">
           <span class="shop-price free">Free</span>
-          <a href="#" class="shop-btn free-btn">Get it free</a>
+          <span class="shop-coming">Coming soon</span>
         </div>
       </div>
     </div>
@@ -2128,7 +2170,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <p class="shop-desc">Not sure if your website is actually ready to go live? This checklist walks you through design, copy, SEO, mobile, and more so nothing gets missed.</p>
         <div class="shop-bottom">
           <span class="shop-price">$9 CAD</span>
-          <a href="#" class="shop-btn">Buy now</a>
+          <span class="shop-coming">Coming soon</span>
         </div>
       </div>
     </div>
@@ -2145,7 +2187,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <p class="shop-desc">Everything you need to build a brand that looks intentional from day one. Brand board, colour guide, font pairings, and 5 social templates.</p>
         <div class="shop-bottom">
           <span class="shop-price">$17 CAD</span>
-          <a href="#" class="shop-btn">Buy now</a>
+          <span class="shop-coming">Coming soon</span>
         </div>
       </div>
     </div>
@@ -2182,7 +2224,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <p class="shop-desc">Stop guessing what to post. This planner gives you 90 days of post ideas and caption prompts so you always know what's going up next.</p>
         <div class="shop-bottom">
           <span class="shop-price">$17 CAD</span>
-          <a href="#" class="shop-btn">Buy now</a>
+          <span class="shop-coming">Coming soon</span>
         </div>
       </div>
     </div>
@@ -2209,7 +2251,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <p class="shop-desc">30 done-for-you post templates covering reel covers, carousels, and quote graphics. Designed to look polished and on-brand right out of the box.</p>
         <div class="shop-bottom">
           <span class="shop-price">$27 CAD</span>
-          <span class="shop-popular">Most popular</span>
+          <span class="shop-coming">Coming soon</span>
         </div>
       </div>
     </div>
@@ -2241,7 +2283,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <p class="shop-desc">A full strategy guide for founders building their social presence from scratch. Covers niche, content pillars, posting schedule, and hashtags across 20 pages.</p>
         <div class="shop-bottom">
           <span class="shop-price">$37 CAD</span>
-          <a href="#" class="shop-btn">Buy now</a>
+          <span class="shop-coming">Coming soon</span>
         </div>
       </div>
     </div>

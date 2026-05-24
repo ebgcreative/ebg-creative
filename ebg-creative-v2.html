@@ -226,6 +226,18 @@ nav.scrolled .nav-cta:hover { background: var(--dusk); border-color: var(--dusk)
   margin-right: 16vw;
   margin-top: -0.08em;
 }
+.splash-services {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(9px, 1vw, 12px);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--dusk);
+  opacity: 0;
+  margin-top: 20px;
+  text-align: center;
+  animation: riseUp 1.2s cubic-bezier(0.16,1,0.3,1) 2.2s forwards;
+}
 .splash-rule {
   width: 0;
   height: 1px;
@@ -1761,6 +1773,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="splash-what">What</span>
     <span class="splash-if">if.</span>
     <div class="splash-rule"></div>
+    <p class="splash-services">Web Design &nbsp;·&nbsp; Social Media Management &nbsp;·&nbsp; Brand &amp; Strategy</p>
   </div>
 </div>
 

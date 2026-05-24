@@ -740,7 +740,7 @@ footer {
   position: absolute;
   inset: 0;
   background: #000;
-  clip-path: inset(0 0 0 50%);
+  clip-path: inset(0 50% 0 0);
   transition: clip-path 0s;
 }
 /* labels */
@@ -2610,7 +2610,7 @@ function submitCapture() {
   function setPos(x) {
     var rect = wrap.getBoundingClientRect();
     pct = Math.max(5, Math.min(95, (x - rect.left) / rect.width * 100));
-    after.style.clipPath = 'inset(0 0 0 ' + pct + '%)';
+    after.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
     handle.style.left = pct + '%';
   }
 

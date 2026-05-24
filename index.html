@@ -308,6 +308,17 @@ nav.scrolled .nav-cta:hover { background: var(--dusk); border-color: var(--dusk)
   color: var(--periwinkle);
 }
 
+.hero-services {
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: clamp(10px, 1.1vw, 13px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 18px;
+  opacity: 0;
+  animation: riseUp 1.6s cubic-bezier(0.16,1,0.3,1) 0.5s forwards;
+}
 .hero-subtext {
   font-family: 'Jost', sans-serif;
   font-weight: 300;
@@ -1736,6 +1747,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     
     <div class="hero-content">
       <h1 class="hero-what-if">Every great idea<br>starts with <em class="hero-if-em">what if</em></h1>
+      <p class="hero-services">Web Design &nbsp;·&nbsp; Social Media Management &nbsp;·&nbsp; Brand &amp; Strategy</p>
       <p class="hero-subtext">The space between where you are and where you're going.<br>That's our what if. What's yours?</p>
       <a href="#" class="hero-btn" onclick="showPage('services',null)">Let's find out what's possible</a>
     </div>

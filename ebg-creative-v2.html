@@ -256,10 +256,9 @@ nav.scrolled .nav-cta:hover { background: var(--dusk); border-color: var(--dusk)
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   text-align: center;
   overflow: hidden;
-  padding-bottom: 10vh;
 }
 
 .hero-video {
@@ -287,6 +286,22 @@ nav.scrolled .nav-cta:hover { background: var(--dusk); border-color: var(--dusk)
 .hero-content {
   position: relative;
   z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 80%;
+  padding: 8vh 0 10vh;
+  gap: 0;
+}
+.hero-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.hero-bottom {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1747,10 +1762,14 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <div class="hero-overlay"></div>
     
     <div class="hero-content">
-      <h1 class="hero-what-if">Every great idea<br>starts with <em class="hero-if-em">what if</em></h1>
-      <p class="hero-services">Web Design &nbsp;·&nbsp; Social Media Management &nbsp;·&nbsp; Brand &amp; Strategy</p>
-      <p class="hero-subtext">The space between where you are and where you're going.<br>That's our what if. What's yours?</p>
-      <a href="#" class="hero-btn" onclick="showPage('services',null)">Let's find out what's possible</a>
+      <div class="hero-top">
+        <h1 class="hero-what-if">Every great idea<br>starts with <em class="hero-if-em">what if</em></h1>
+        <p class="hero-services">Web Design &nbsp;·&nbsp; Social Media Management &nbsp;·&nbsp; Brand &amp; Strategy</p>
+      </div>
+      <div class="hero-bottom">
+        <p class="hero-subtext">The space between where you are and where you're going.<br>That's our what if. What's yours?</p>
+        <a href="#" class="hero-btn" onclick="showPage('services',null)">Let's find out what's possible</a>
+      </div>
     </div>
 
   </section>

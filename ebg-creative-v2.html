@@ -1685,6 +1685,70 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
   margin: 0;
 }
 
+
+/* ── Services intro ───────────────────────────────────── */
+.svc-intro {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  max-width: 1100px;
+  margin: 0 auto 64px;
+  padding: 0 56px;
+}
+.svc-card {
+  padding: 40px 36px;
+  background: var(--warm-linen);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.svc-num {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--steel-blue);
+}
+.svc-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(20px, 2vw, 26px);
+  color: var(--night-navy);
+  line-height: 1.2;
+}
+.svc-desc {
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  color: var(--dusk);
+  line-height: 1.75;
+  font-weight: 300;
+}
+.svc-quiz-bridge {
+  text-align: center;
+  margin: 0 auto 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.svc-quiz-bridge p {
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--dusk);
+}
+.svc-quiz-bridge span {
+  color: var(--steel-blue);
+  font-size: 20px;
+  animation: bounceDown 1.8s ease-in-out infinite;
+}
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+@media (max-width: 768px) {
+  .svc-intro { grid-template-columns: 1fr; padding: 0 24px; }
+}
+
 </style>
 </head>
 <body>
@@ -1961,6 +2025,29 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       <h1 class="page-title">Let's find your<br><em>perfect fit.</em></h1>
       <p class="page-sub">Answer four questions. We'll tell you exactly where to start.</p>
     </section>
+
+    <div class="svc-intro">
+      <div class="svc-card reveal">
+        <span class="svc-num">01</span>
+        <h3 class="svc-name">Web Design</h3>
+        <p class="svc-desc">Custom websites built to convert — designed around your brand, your audience, and what you're actually trying to achieve.</p>
+      </div>
+      <div class="svc-card reveal" style="transition-delay:0.1s">
+        <span class="svc-num">02</span>
+        <h3 class="svc-name">Social Media Management</h3>
+        <p class="svc-desc">Consistent, on-brand content that keeps you showing up — strategy, captions, scheduling, and creative direction all handled.</p>
+      </div>
+      <div class="svc-card reveal" style="transition-delay:0.2s">
+        <span class="svc-num">03</span>
+        <h3 class="svc-name">Brand &amp; Strategy</h3>
+        <p class="svc-desc">From logo to full brand identity — the visual language, tone, and positioning that makes your business instantly recognisable.</p>
+      </div>
+    </div>
+
+    <div class="svc-quiz-bridge reveal">
+      <p>Not sure which one is right for you?</p>
+      <span>↓</span>
+    </div>
 
     <div class="concierge-body">
       <div class="quiz-container">

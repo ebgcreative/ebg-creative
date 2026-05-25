@@ -1180,7 +1180,8 @@ footer {
   align-items: center;
   justify-content: space-between;
 }
-.shop-price {
+.shop-price { display: none; }
+.shop-price-hidden {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 400;
   font-size: 20px;
@@ -1945,7 +1946,6 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
       <li><a href="#">Instagram</a></li>
-      <li><a href="#">LinkedIn</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2024,7 +2024,6 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
       <li><a href="#">Instagram</a></li>
-      <li><a href="#">LinkedIn</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2209,7 +2208,6 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
       <li><a href="#">Instagram</a></li>
-      <li><a href="#">LinkedIn</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2243,7 +2241,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <h3 class="shop-name">Brand Essentials Checklist</h3>
         <p class="shop-desc">Not sure where to start with your brand? This 26-item checklist walks you through everything you need to build your brand from the ground up.</p>
         <div class="shop-bottom">
-          <span class="shop-price free">Free</span>
+          
           <span class="shop-coming">Coming soon</span>
         </div>
       </div>
@@ -2269,7 +2267,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <h3 class="shop-name">Website Launch Checklist</h3>
         <p class="shop-desc">Not sure if your website is actually ready to go live? This checklist walks you through design, copy, SEO, mobile, and more so nothing gets missed.</p>
         <div class="shop-bottom">
-          <span class="shop-price">$9 CAD</span>
+          
           <span class="shop-coming">Coming soon</span>
         </div>
       </div>
@@ -2286,7 +2284,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <h3 class="shop-name">Startup Brand Starter Kit</h3>
         <p class="shop-desc">Everything you need to build a brand that looks intentional from day one. Brand board, colour guide, font pairings, and 5 social templates.</p>
         <div class="shop-bottom">
-          <span class="shop-price">$17 CAD</span>
+          
           <span class="shop-coming">Coming soon</span>
         </div>
       </div>
@@ -2323,7 +2321,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <h3 class="shop-name">Content Calendar Template</h3>
         <p class="shop-desc">Stop guessing what to post. This planner gives you 90 days of post ideas and caption prompts so you always know what's going up next.</p>
         <div class="shop-bottom">
-          <span class="shop-price">$17 CAD</span>
+          
           <span class="shop-coming">Coming soon</span>
         </div>
       </div>
@@ -2350,7 +2348,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <h3 class="shop-name">Social Media Post Pack</h3>
         <p class="shop-desc">30 done-for-you post templates covering reel covers, carousels, and quote graphics. Designed to look polished and on-brand right out of the box.</p>
         <div class="shop-bottom">
-          <span class="shop-price">$27 CAD</span>
+          
           <span class="shop-coming">Coming soon</span>
         </div>
       </div>
@@ -2382,7 +2380,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
         <h3 class="shop-name">Startup Social Media Playbook</h3>
         <p class="shop-desc">A full strategy guide for founders building their social presence from scratch. Covers niche, content pillars, posting schedule, and hashtags across 20 pages.</p>
         <div class="shop-bottom">
-          <span class="shop-price">$37 CAD</span>
+          
           <span class="shop-coming">Coming soon</span>
         </div>
       </div>
@@ -2394,7 +2392,6 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
       <li><a href="#">Instagram</a></li>
-      <li><a href="#">LinkedIn</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2462,7 +2459,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       </div>
       <div class="contact-info-item">
         <span class="contact-info-label">Phone</span>
-        <span class="contact-info-val">519-215-8935</span>
+        <span class="contact-info-val"></span>
       </div>
       <div class="contact-info-item">
         <span class="contact-info-label">Location</span>
@@ -2480,7 +2477,6 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
       <li><a href="#">Instagram</a></li>
-      <li><a href="#">LinkedIn</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2512,7 +2508,7 @@ function enterSite() {
 }
 setTimeout(() => {
   if (!document.getElementById('splash').classList.contains('gone')) enterSite();
-}, 8000);
+}, 5000);
 document.body.style.overflow = 'hidden';
 
 // PAGE NAV

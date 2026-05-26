@@ -502,12 +502,23 @@ nav.scrolled .nav-cta:hover { background: var(--dusk); border-color: var(--dusk)
 .whatif-item {
   background: var(--soft-mist);
   padding: 48px 40px;
-  transition: background 0.4s ease;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  opacity: 0;
+  transform: translateY(36px) scale(0.96);
+  transition: background 0.4s ease;
 }
 .whatif-item:hover { background: #cad7ec; }
+.whatif-item.bounce-in {
+  animation: whatifBounce 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes whatifBounce {
+  0%   { opacity: 0; transform: translateY(40px) scale(0.95); }
+  60%  { opacity: 1; transform: translateY(-8px) scale(1.015); }
+  80%  { transform: translateY(4px) scale(0.997); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 .whatif-num {
   font-size: 9px;
@@ -1966,18 +1977,18 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       <p class="section-label">The what if</p>
       <h2 class="whatif-intro-headline">Three questions that<br>change <em>everything.</em></h2>
     </div>
-    <div class="whatif-grid">
-      <div class="whatif-item reveal">
+    <div class="whatif-grid" id="whatifGrid">
+      <div class="whatif-item" data-bounce-delay="0">
         <p class="whatif-num">001</p>
         <p class="whatif-q">What if limits weren't part of the conversation.</p>
         <p class="whatif-whisper">Scale.</p>
       </div>
-      <div class="whatif-item reveal" style="transition-delay:0.15s">
+      <div class="whatif-item" data-bounce-delay="150">
         <p class="whatif-num">002</p>
         <p class="whatif-q">What if your boldest idea was actually the right one.</p>
         <p class="whatif-whisper">Recognition.</p>
       </div>
-      <div class="whatif-item reveal" style="transition-delay:0.3s">
+      <div class="whatif-item" data-bounce-delay="300">
         <p class="whatif-num">003</p>
         <p class="whatif-q">What if everything changes from here.</p>
         <p class="whatif-whisper">Impact.</p>
@@ -2746,6 +2757,28 @@ function showPage(id, linkEl) {
 
   return false;
 }
+
+// WHAT-IF BOUNCE-IN SEQUENCE
+(function() {
+  var triggered = false;
+  var grid = document.getElementById('whatifGrid');
+  if (!grid) return;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !triggered) {
+        triggered = true;
+        grid.querySelectorAll('.whatif-item').forEach(function(card) {
+          var delay = parseInt(card.dataset.bounceDelay) || 0;
+          setTimeout(function() {
+            card.classList.add('bounce-in');
+          }, delay);
+        });
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.25 });
+  observer.observe(grid);
+})();
 
 // SCROLL REVEAL
 

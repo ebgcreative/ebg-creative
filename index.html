@@ -3136,6 +3136,36 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 })();
 </script>
+
+<!-- COLOUR WHEEL MODAL — body-level so position:fixed works correctly -->
+<div id="colorWheelModal" class="cw-modal" style="display:none;">
+  <div class="cw-backdrop" onclick="pg_closeWheel()"></div>
+  <div class="cw-panel">
+    <p class="cw-title">Pick a colour</p>
+    <div class="cw-canvas-wrap">
+      <canvas id="colorWheelCanvas" width="220" height="220"></canvas>
+    </div>
+    <div class="cw-controls">
+      <div class="cw-preview-wrap">
+        <div class="cw-preview" id="cwPreview"></div>
+      </div>
+      <div class="cw-inputs">
+        <div class="cw-field">
+          <label>Hex</label>
+          <input type="text" id="cwHexInput" maxlength="7" placeholder="#000000" oninput="pg_hexInput(this.value)">
+        </div>
+        <div class="cw-field">
+          <label>Name</label>
+          <input type="text" id="cwNameInput" placeholder="e.g. Butter Yellow" maxlength="24">
+        </div>
+      </div>
+    </div>
+    <div class="cw-actions">
+      <button class="pg-btn-ghost" onclick="pg_closeWheel()">Cancel</button>
+      <button class="pg-btn-ghost active" onclick="pg_applyColour()">Apply</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
 
@@ -3902,36 +3932,6 @@ document.addEventListener('DOMContentLoaded', function() {
         <div id="randomPaletteLabel" style="min-height:20px;margin-bottom:10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--steel-blue);letter-spacing:0.04em;opacity:0;transition:opacity 0.4s ease;"></div>
         <div class="palette-actions" style="margin-top:0;">
           <button class="pg-btn-ghost" onclick="pg_randomizeCustom()">Randomize palette</button>
-        </div>
-      </div>
-
-      <!-- COLOUR WHEEL MODAL -->
-      <div id="colorWheelModal" class="cw-modal" style="display:none;">
-        <div class="cw-backdrop" onclick="pg_closeWheel()"></div>
-        <div class="cw-panel">
-          <p class="cw-title">Pick a colour</p>
-          <div class="cw-canvas-wrap">
-            <canvas id="colorWheelCanvas" width="220" height="220"></canvas>
-          </div>
-          <div class="cw-controls">
-            <div class="cw-preview-wrap">
-              <div class="cw-preview" id="cwPreview"></div>
-            </div>
-            <div class="cw-inputs">
-              <div class="cw-field">
-                <label>Hex</label>
-                <input type="text" id="cwHexInput" maxlength="7" placeholder="#000000" oninput="pg_hexInput(this.value)">
-              </div>
-              <div class="cw-field">
-                <label>Name</label>
-                <input type="text" id="cwNameInput" placeholder="e.g. Butter Yellow" maxlength="24">
-              </div>
-            </div>
-          </div>
-          <div class="cw-actions">
-            <button class="pg-btn-ghost" onclick="pg_closeWheel()">Cancel</button>
-            <button class="pg-btn-ghost active" onclick="pg_applyColour()">Apply</button>
-          </div>
         </div>
       </div>
 

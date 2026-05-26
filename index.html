@@ -29,6 +29,32 @@
 <meta name="twitter:description" content="Small business branding that actually looks like you. Web design, social media management, and brand strategy.">
 <meta name="twitter:image" content="https://ebg-creative.vercel.app/og-image.jpg">
 
+<!-- ── Vercel Analytics ───────────────────────────────────────── -->
+<!-- Enable in: Vercel dashboard → your project → Analytics tab → Enable -->
+<script defer src="/_vercel/insights/script.js"></script>
+
+<!-- ── Google Analytics 4 ────────────────────────────────────── -->
+<!-- 1. Go to analytics.google.com → Admin → Create Property        -->
+<!-- 2. Copy your Measurement ID (looks like G-XXXXXXXXXX)          -->
+<!-- 3. Replace G-XXXXXXXXXX below with your real ID, then push     -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX', {
+    page_title: document.title,
+    anonymize_ip: true
+  });
+  // Track SPA page changes — fires every time showPage() navigates
+  window._gtagPageView = function(pageName) {
+    gtag('event', 'page_view', {
+      page_title: 'EBG Creative — ' + pageName,
+      page_location: window.location.href + '#' + pageName
+    });
+  };
+</script>
+
 <!-- ── Favicon ────────────────────────────────────────────────── -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%231C2B4A'/%3E%3Ctext y='.9em' font-size='72' font-family='Georgia%2C serif' x='50%25' text-anchor='middle' dominant-baseline='top' fill='%23B8C9E8'%3EE%3C/text%3E%3C/svg%3E">
 
@@ -2059,7 +2085,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-logo">EBG Creative</span>
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
-      <li><a href="#">Instagram</a></li>
+      <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2137,7 +2163,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-logo">EBG Creative</span>
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
-      <li><a href="#">Instagram</a></li>
+      <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2325,7 +2351,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-logo">EBG Creative</span>
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
-      <li><a href="#">Instagram</a></li>
+      <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2514,7 +2540,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-logo">EBG Creative</span>
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
-      <li><a href="#">Instagram</a></li>
+      <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2600,7 +2626,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       </div>
       <div class="contact-info-item">
         <span class="contact-info-label">Instagram</span>
-        <span class="contact-info-val">@ebgcreative</span>
+        <a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener" class="contact-info-val" style="text-decoration:none; color:inherit;">@ebg.creative</a>
       </div>
     </div>
   </div>
@@ -2609,7 +2635,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <span class="footer-logo">EBG Creative</span>
     <span class="footer-tag">Designing content that connects and converts</span>
     <ul class="footer-links">
-      <li><a href="#">Instagram</a></li>
+      <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
   </footer>
@@ -2713,6 +2739,11 @@ function showPage(id, linkEl) {
     nextPage.getBoundingClientRect();
     nextPage.classList.add('page-visible');
     setTimeout(initReveal, 80);
+  }
+
+  // Fire GA4 page view for SPA navigation
+  if (typeof window._gtagPageView === 'function') {
+    window._gtagPageView(id.charAt(0).toUpperCase() + id.slice(1));
   }
 
   return false;

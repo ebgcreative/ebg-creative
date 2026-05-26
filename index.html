@@ -2479,6 +2479,24 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
 </div>
 
 <script>
+
+// HERO PARALLAX
+(function() {
+  var heroContent = document.querySelector('.hero-content');
+  var heroSection = document.querySelector('.hero');
+  if (!heroContent || !heroSection) return;
+
+  function onScroll() {
+    var scrollY = window.scrollY;
+    var heroH  = heroSection.offsetHeight;
+    if (scrollY > heroH) return;
+    // drift copy down at 40% of scroll speed
+    heroContent.style.transform = 'translateY(' + (scrollY * 0.4) + 'px)';
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
 // CURSOR
 const cursor = document.getElementById('cursor');
 document.addEventListener('mousemove', e => {

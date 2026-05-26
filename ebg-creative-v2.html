@@ -1762,6 +1762,94 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
   .svc-intro { grid-template-columns: 1fr; padding: 0 24px; }
 }
 
+
+/* Quiz skip */
+.quiz-skip-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.quiz-skip-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  color: var(--dusk);
+}
+.quiz-skip-link {
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  color: var(--night-navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
+}
+.quiz-skip-link:hover { opacity: 0.6; }
+
+/* Shop notify */
+.shop-notify-wrap {
+  max-width: 520px;
+  margin: 0 auto 56px;
+  text-align: center;
+  padding: 40px 36px;
+  background: var(--warm-linen);
+  border-radius: 2px;
+}
+.shop-notify-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 2.5vw, 30px);
+  font-weight: 400;
+  color: var(--night-navy);
+  margin-bottom: 8px;
+}
+.shop-notify-sub {
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  color: var(--dusk);
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.shop-notify-form {
+  display: flex;
+  gap: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+.shop-notify-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--periwinkle);
+  background: white;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  color: var(--night-navy);
+  border-radius: 2px;
+  outline: none;
+}
+.shop-notify-input:focus { border-color: var(--steel-blue); }
+.shop-notify-btn {
+  padding: 12px 22px;
+  background: var(--night-navy);
+  color: white;
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.shop-notify-btn:hover { opacity: 0.85; }
+.shop-notify-thanks {
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  color: var(--steel-blue);
+  margin-top: 16px;
+  letter-spacing: 0.05em;
+}
+
 </style>
 </head>
 <body>
@@ -2063,6 +2151,10 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
 
     <div class="concierge-body">
       <div class="quiz-container">
+        <div class="quiz-skip-wrap">
+          <span class="quiz-skip-label">Already know what you need?</span>
+          <a href="#" class="quiz-skip-link" onclick="showPage('contact',null)">Skip to contact &rarr;</a>
+        </div>
         <div class="quiz-progress">
           <div class="quiz-dot active" id="dot-0"></div>
           <div class="quiz-dot" id="dot-1"></div>
@@ -2221,9 +2313,14 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
     <p class="page-sub">Downloadable templates and guides built for small businesses who are ready to show up.</p>
   </section>
 
-  <div class="shop-launch-notice">
-    <span class="shop-launch-icon">✦</span>
-    <p>The shop is launching soon — payment processing is on its way. Check back shortly.</p>
+  <div class="shop-notify-wrap">
+    <p class="shop-notify-title">The shop is almost here.</p>
+    <p class="shop-notify-sub">Drop your email and you'll be the first to know when it launches.</p>
+    <form class="shop-notify-form" onsubmit="handleShopNotify(event)">
+      <input type="email" class="shop-notify-input" placeholder="hello@yourbusiness.ca" required>
+      <button type="submit" class="shop-notify-btn">Notify me</button>
+    </form>
+    <p class="shop-notify-thanks" id="shopThanks" style="display:none;">✦ &nbsp;You're on the list. We'll be in touch.</p>
   </div>
   <div class="shop-grid">
     <div class="shop-card reveal">
@@ -2496,6 +2593,14 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
 
   window.addEventListener('scroll', onScroll, { passive: true });
 })();
+
+
+// SHOP NOTIFY
+function handleShopNotify(e) {
+  e.preventDefault();
+  document.querySelector('.shop-notify-form').style.display = 'none';
+  document.getElementById('shopThanks').style.display = 'block';
+}
 
 // CURSOR
 const cursor = document.getElementById('cursor');

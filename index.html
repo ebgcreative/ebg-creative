@@ -3692,8 +3692,9 @@ document.addEventListener('DOMContentLoaded', function() {
         <h2 class="pg-step-title">Build your palette.</h2>
         <p class="pg-step-hint">Click any colour to customise it. Give each one a name that feels right.</p>
         <div class="custom-palette-row" id="customPaletteRow"></div>
-        <div class="palette-actions" style="margin-top:16px;">
-          <button class="pg-btn-ghost" onclick="pg_randomizeCustom()">Randomize</button>
+        <div id="randomPaletteLabel" style="min-height:20px;margin-bottom:10px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--steel-blue);letter-spacing:0.04em;opacity:0;transition:opacity 0.4s ease;"></div>
+        <div class="palette-actions" style="margin-top:0;">
+          <button class="pg-btn-ghost" onclick="pg_randomizeCustom()">Randomize palette</button>
         </div>
       </div>
 
@@ -3915,6 +3916,111 @@ document.addEventListener('DOMContentLoaded', function() {
         ['#1B1B2F','#8B6F9E','#D4AF7A','#2E2E48','#F0E8D4'],
         ['#13131F','#7A5E8A','#C49A60','#252537','#EAE0C8'],
         ['#0F0F1E','#9B7FBE','#E0C07A','#1E1E36','#F5EDD8'],
+      ]
+    },
+    {
+      id: 'nebulous', name: 'Nebulous', adj: 'Dreamy · Romantic',
+      colors: [
+        { hex: '#C4BAB9', name: 'Nebulous' },
+        { hex: '#F2CB84', name: 'Perky Yellow' },
+        { hex: '#A8C8A0', name: 'Fresh on the Market' },
+        { hex: '#F0DDD0', name: 'Silk Ribbon' },
+        { hex: '#7B2438', name: 'Vampirella' },
+      ],
+      variants: [
+        ['#C4BAB9','#F2CB84','#A8C8A0','#F0DDD0','#7B2438'],
+        ['#B8ABA9','#E8BC74','#98B890','#E8D4C4','#6A1E30'],
+        ['#D0C8C6','#F8D898','#B8D8B0','#F8EAE0','#8C2A44'],
+      ]
+    },
+    {
+      id: 'canyon_clay', name: 'Canyon Clay', adj: 'Earthy · Warm',
+      colors: [
+        { hex: '#F7F1E6', name: 'Oat Milk' },
+        { hex: '#F2C4CE', name: 'Peony Blush' },
+        { hex: '#C26D53', name: 'Canyon Clay' },
+        { hex: '#B8D4C8', name: 'Eucalyptus Mist' },
+        { hex: '#4A5240', name: 'Forest Floor' },
+      ],
+      variants: [
+        ['#F7F1E6','#F2C4CE','#C26D53','#B8D4C8','#4A5240'],
+        ['#EDE8D8','#E8B4BE','#B05E44','#A8C4B8','#3C4434'],
+        ['#FBF7EE','#F8D4DC','#D07860','#C8E0D8','#5A6250'],
+      ]
+    },
+    {
+      id: 'citrus_coast', name: 'Citrus Coast', adj: 'Vibrant · Mediterranean',
+      colors: [
+        { hex: '#FFA62B', name: 'Citrus Zest' },
+        { hex: '#88C4D8', name: 'Sea Breeze' },
+        { hex: '#3B82B0', name: 'Amalfi Tile' },
+        { hex: '#F9EDD2', name: 'Cream Gelato' },
+        { hex: '#2C4A20', name: 'Olive Terrace' },
+      ],
+      variants: [
+        ['#FFA62B','#88C4D8','#3B82B0','#F9EDD2','#2C4A20'],
+        ['#F0962A','#78B4C8','#2A7298','#F4E4C4','#243C18'],
+        ['#FFB640','#98D4E8','#4C92C0','#FDF5DC','#385228'],
+      ]
+    },
+    {
+      id: 'dark_forest', name: 'Dark Forest', adj: 'Grounded · Mossy',
+      colors: [
+        { hex: '#0A3323', name: 'Dark Green' },
+        { hex: '#4A6741', name: 'Moss Green' },
+        { hex: '#D4C4A8', name: 'Beige' },
+        { hex: '#BC8F8F', name: 'Rosy Brown' },
+        { hex: '#1B4D3E', name: 'Midnight Green' },
+      ],
+      variants: [
+        ['#0A3323','#4A6741','#D4C4A8','#BC8F8F','#1B4D3E'],
+        ['#082B1C','#3C5836','#C8B898','#AE8484','#163F34'],
+        ['#0E3E2C','#586E4E','#E0D0B4','#C89898','#22604C'],
+      ]
+    },
+    {
+      id: 'aperol_hour', name: 'Aperol Hour', adj: 'Playful · Vivid',
+      colors: [
+        { hex: '#CDD0DB', name: 'Cloud' },
+        { hex: '#9197AA', name: 'Azul' },
+        { hex: '#F5E040', name: 'Mimosa' },
+        { hex: '#FF8C42', name: 'Orange' },
+        { hex: '#E8401C', name: 'Aperol' },
+      ],
+      variants: [
+        ['#CDD0DB','#9197AA','#F5E040','#FF8C42','#E8401C'],
+        ['#BDC0CB','#818398','#ECD030','#F07C32','#D83018'],
+        ['#DDE0EB','#A1A7BA','#FFF060','#FF9C52','#F8502C'],
+      ]
+    },
+    {
+      id: 'sugar_cookie', name: 'Sugar Cookie', adj: 'Sweet · Coastal',
+      colors: [
+        { hex: '#EDD5C0', name: 'Sugar Cookie' },
+        { hex: '#7DCFDA', name: 'Pool Water' },
+        { hex: '#C8DDE8', name: 'Breeze' },
+        { hex: '#F5E6A3', name: 'Butter' },
+        { hex: '#E8943A', name: 'Tuscan Sun' },
+      ],
+      variants: [
+        ['#EDD5C0','#7DCFDA','#C8DDE8','#F5E6A3','#E8943A'],
+        ['#E4C8AE','#6DBFCA','#B8CDD8','#ECD888','#D88430'],
+        ['#F5E0CC','#8DDFEC','#D8EDF8','#FDF5B3','#F8A440'],
+      ]
+    },
+    {
+      id: 'ruby_spice', name: 'Ruby Spice', adj: 'Bold · Warm',
+      colors: [
+        { hex: '#9B1928', name: 'Ruby Spice' },
+        { hex: '#F08060', name: 'Salmon' },
+        { hex: '#DDBCC8', name: 'Pink Opal' },
+        { hex: '#C8931A', name: 'Citrus Gold' },
+        { hex: '#8B3322', name: 'Smoked Paprika' },
+      ],
+      variants: [
+        ['#9B1928','#F08060','#DDBCC8','#C8931A','#8B3322'],
+        ['#8A1420','#E07050','#D0ACBC','#B8831A','#7A2818'],
+        ['#B01E30','#F89070','#ECCcd8','#D8A320','#9C3C28'],
       ]
     },
   ];
@@ -4265,16 +4371,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ── RANDOMIZE CUSTOM ────────────────────────────────────────────────────────
   window.pg_randomizeCustom = function() {
-    // Generate a harmonious set: pick base hue, spread 5 hues ± offset
-    const baseH = Math.random() * 360;
-    const offsets = [0, 28, 55, 150, 200];
-    const sats = [0.35, 0.45, 0.55, 0.65, 0.25];
-    const vals = [0.92, 0.78, 0.65, 0.88, 0.55];
-    state.customColors = offsets.map((o, i) => {
-      const h = (baseH + o) % 360;
-      const hex = hsvToHex(h, sats[i], vals[i]);
-      return { hex, name: 'Colour ' + (i + 1) };
-    });
+    // Pick a random curated vibe (avoid repeating last one)
+    const eligible = vibes.filter(v => v.id !== state._lastRandomVibeId);
+    const vibe = eligible[Math.floor(Math.random() * eligible.length)];
+    state._lastRandomVibeId = vibe.id;
+    // Pick a random variant if available, otherwise use base colors
+    const hasVariants = vibe.variants && vibe.variants.length > 1;
+    const variantHexes = hasVariants
+      ? vibe.variants[Math.floor(Math.random() * vibe.variants.length)]
+      : vibe.colors.map(c => c.hex);
+    state.customColors = vibe.colors.map((c, i) => ({
+      hex: variantHexes[i] || c.hex,
+      name: c.name,
+    }));
+    // Show palette name label
+    const label = document.getElementById('randomPaletteLabel');
+    if (label) {
+      label.textContent = vibe.name + ' · ' + vibe.adj;
+      label.style.opacity = '1';
+    }
     renderCustomPalette();
     updatePreviewCustom();
   };

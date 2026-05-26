@@ -1850,10 +1850,22 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
 }
 .quiz-skip-link:hover { opacity: 0.6; }
 
+/* Shop hero two-col */
+.shop-hero-row {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 48px;
+  align-items: center;
+  padding: 80px var(--page-pad) 64px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.shop-hero-text .page-eyebrow { margin-bottom: 16px; }
+.shop-hero-text .page-title   { margin-bottom: 16px; }
+.shop-hero-text .page-sub     { max-width: 480px; }
+
 /* Shop notify */
 .shop-notify-wrap {
-  max-width: 520px;
-  margin: 0 auto 56px;
   text-align: center;
   padding: 40px 36px;
   background: var(--warm-linen);
@@ -2371,20 +2383,21 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
 
 <!-- ═══ SHOP ═══ -->
 <div id="page-shop" class="page">
-  <section class="page-hero">
-    <p class="page-eyebrow">The Shop</p>
-    <h1 class="page-title">Tools to get you<br><em>moving.</em></h1>
-    <p class="page-sub">Downloadable templates and guides built for small businesses who are ready to show up.</p>
-  </section>
-
-  <div class="shop-notify-wrap">
-    <p class="shop-notify-title">The shop is almost here.</p>
-    <p class="shop-notify-sub">Drop your email and you'll be the first to know when it launches.</p>
-    <form class="shop-notify-form" onsubmit="handleShopNotify(event)">
-      <input type="email" class="shop-notify-input" placeholder="hello@yourbusiness.ca" required>
-      <button type="submit" class="shop-notify-btn">Notify me</button>
-    </form>
-    <p class="shop-notify-thanks" id="shopThanks" style="display:none;">✦ &nbsp;You're on the list. We'll be in touch.</p>
+  <div class="shop-hero-row">
+    <div class="shop-hero-text">
+      <p class="page-eyebrow">The Shop</p>
+      <h1 class="page-title">Tools to get you<br><em>moving.</em></h1>
+      <p class="page-sub">Downloadable templates and guides built for small businesses who are ready to show up.</p>
+    </div>
+    <div class="shop-notify-wrap">
+      <p class="shop-notify-title">The shop is almost here.</p>
+      <p class="shop-notify-sub">Drop your email and you'll be the first to know when it launches.</p>
+      <form class="shop-notify-form" onsubmit="handleShopNotify(event)">
+        <input type="email" class="shop-notify-input" placeholder="hello@yourbusiness.ca" required>
+        <button type="submit" class="shop-notify-btn">Notify me</button>
+      </form>
+      <p class="shop-notify-thanks" id="shopThanks" style="display:none;">✦ &nbsp;You're on the list. We'll be in touch.</p>
+    </div>
   </div>
   <div class="shop-grid">
     <div class="shop-card reveal">

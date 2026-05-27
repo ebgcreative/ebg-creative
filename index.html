@@ -1534,8 +1534,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
   /* ── Playground hero: keep 2-col, compact font ──────── */
   .pg-hero             { padding: 100px 40px 64px; gap: 24px; min-height: unset; }
   .pg-hero-title       { font-size: clamp(26px, 3.2vw, 48px); line-height: 1.1; }
-  /* Hide long paragraph — heading carries the message    */
-  .pg-hero-sub         { display: none; }
+  .pg-hero-sub         { font-size: 13px; }
 
   /* ── Section padding ─────────────────────────────────── */
   .whatif              { padding: 72px 32px; }
@@ -1587,6 +1586,9 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
 
   /* ── Values: 4 → 2 ─────────────────────────────────── */
   .values-section > div { grid-template-columns: 1fr 1fr; }
+
+  /* ── Shop hero: 2-col → 1-col ───────────────────────── */
+  .shop-hero-row       { grid-template-columns: 1fr; padding: 120px 40px 64px; gap: 40px; }
 
   /* ── Shop: 3 → 1 ────────────────────────────────────── */
   .shop-grid           { grid-template-columns: 1fr; }
@@ -1658,10 +1660,10 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
   .page-title          { font-size: clamp(28px, 9vw, 48px); }
 
   /* ── Playground hero: collapse to 1 col ─────────────── */
-  .pg-hero             { grid-template-columns: 1fr; padding: 100px 24px 56px; gap: 0; }
-  .pg-hero-video       { display: none; }
+  .pg-hero             { grid-template-columns: 1fr; padding: 100px 24px 56px; gap: 16px; }
+  .pg-hero-video       { width: 100%; max-height: 200px; border-radius: 4px; overflow: hidden; }
   .pg-hero-title       { font-size: clamp(28px, 7.5vw, 44px); line-height: 1.1; }
-  .pg-hero-sub         { display: none; }
+  .pg-hero-sub         { font-size: 13px; line-height: 1.6; }
 
   /* ── Section padding ─────────────────────────────────── */
   .whatif              { padding: 56px 20px; }
@@ -1675,10 +1677,16 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
 
   /* ── Typography ─────────────────────────────────────── */
   .cta-band h2, .pg-cta h2 { font-size: clamp(26px, 8vw, 40px); }
+  .snap-title          { font-size: clamp(22px, 6vw, 32px); }
+  .snap-desc           { font-size: 14px; }
+  .ba-title            { font-size: clamp(28px, 8vw, 44px); }
+  .ba-sub              { font-size: 13px; }
+  .section-title       { font-size: clamp(24px, 7vw, 38px); }
+  .page-sub            { font-size: 14px; }
 
   /* ── About images ────────────────────────────────────── */
   .about-img           { max-width: 100%; aspect-ratio: 3/2; }
-  .about-img-tag       { display: none; }
+  .about-img-tag       { position: static; transform: none; margin: 16px auto 0; max-width: 260px; font-size: 14px; padding: 16px 20px; }
   .about-story-img     { aspect-ratio: 4/3; max-height: 300px; }
 
   /* ── Layout ──────────────────────────────────────────── */
@@ -1717,6 +1725,11 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
 
   /* ── Quiz ────────────────────────────────────────────── */
   .quiz-track          { padding: 36px 20px; }
+
+  /* ── Shop hero ──────────────────────────────────────── */
+  .shop-hero-row       { padding: 100px 20px 56px; gap: 32px; }
+  .shop-notify-form    { flex-direction: column; }
+  .shop-notify-btn     { width: 100%; }
 
   /* ── Contact form ────────────────────────────────────── */
   .contact-body        { padding: 48px 20px; }

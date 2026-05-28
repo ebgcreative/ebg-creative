@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBG HQ — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080810; --bg2: #0d0d1a; --panel: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08); --cream: #EDE8E2;
+      --cream-dim: rgba(237,232,226,0.55); --peri: #B8C9E8;
+      --peri-dim: rgba(184,201,232,0.15); --success: #9ED4B4; --warn: #E8CDA0;
+    }
+    html,body { height:100%; background:var(--bg); color:var(--cream); font-family:'Jost',sans-serif; font-weight:300; }
+
+    /* ── Layout ── */
+    .layout { display:flex; min-height:100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 220px; min-width:220px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display:flex; flex-direction:column;
+      padding: 32px 0 24px;
+      position: sticky; top:0; height:100vh; overflow:auto;
+    }
+    .sidebar-mark {
+      font-family:'Cormorant Garamond',serif; font-size:13px; letter-spacing:0.2em;
+      text-transform:uppercase; color:var(--peri); padding:0 28px 28px;
+      border-bottom:1px solid var(--border); margin-bottom:24px;
+    }
+    .sidebar-mark span { display:block; font-size:10px; color:var(--cream-dim); margin-top:2px; letter-spacing:0.1em; }
+    .nav-item {
+      display:flex; align-items:center; gap:12px;
+      padding:11px 28px; font-size:13px; color:var(--cream-dim);
+      cursor:pointer; transition:all 0.15s; text-decoration:none;
+      border-left:2px solid transparent;
+    }
+    .nav-item:hover { color:var(--cream); background:rgba(255,255,255,0.03); }
+    .nav-item.active { color:var(--peri); border-left-color:var(--peri); background:var(--peri-dim); }
+    .nav-icon { font-size:15px; width:18px; text-align:center; }
+    .sidebar-spacer { flex:1; }
+    .nav-signout { color:rgba(237,232,226,0.3); font-size:12px; }
+    .nav-signout:hover { color:var(--cream-dim); }
+
+    /* ── Main ── */
+    .main { flex:1; padding:48px 52px; overflow:auto; }
+    .page-header { margin-bottom:40px; }
+    .page-eyebrow { font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:var(--peri); margin-bottom:10px; }
+    .page-title { font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:300; }
+    .page-title em { font-style:italic; }
+
+    /* ── Stats row ── */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px; }
+    .stat-card {
+      background:var(--panel); border:1px solid var(--border); border-radius:12px;
+      padding:24px 28px;
+    }
+    .stat-label { font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--cream-dim); margin-bottom:10px; }
+    .stat-val { font-family:'Cormorant Garamond',serif; font-size:38px; font-weight:300; color:var(--cream); }
+    .stat-sub { font-size:12px; color:var(--cream-dim); margin-top:4px; }
+
+    /* ── Clients table ── */
+    .section-header {
+      display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;
+    }
+    .section-title { font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--cream-dim); }
+    .btn-new {
+      padding:9px 20px; background:var(--peri); color:#080810;
+      border:none; border-radius:8px; font-family:'Jost',sans-serif;
+      font-size:12px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase;
+      cursor:pointer; transition:opacity 0.2s;
+    }
+    .btn-new:hover { opacity:0.85; }
+
+    .clients-table {
+      width:100%; border-collapse:collapse;
+      background:var(--panel); border:1px solid var(--border); border-radius:12px;
+      overflow:hidden;
+    }
+    .clients-table th {
+      padding:14px 20px; font-size:11px; letter-spacing:0.12em;
+      text-transform:uppercase; color:var(--cream-dim);
+      text-align:left; border-bottom:1px solid var(--border);
+      background:rgba(255,255,255,0.02);
+    }
+    .clients-table td {
+      padding:16px 20px; font-size:13px; color:var(--cream);
+      border-bottom:1px solid rgba(255,255,255,0.04);
+    }
+    .clients-table tr:last-child td { border-bottom:none; }
+    .clients-table tr:hover td { background:rgba(255,255,255,0.02); }
+    .clients-table tbody tr { cursor:pointer; transition:background 0.15s; }
+
+    .phase-badge {
+      display:inline-block; padding:3px 10px; border-radius:20px;
+      font-size:11px; letter-spacing:0.06em;
+    }
+    .phase-Onboarding  { background:rgba(184,201,232,0.15); color:var(--peri); }
+    .phase-Discovery   { background:rgba(184,201,232,0.15); color:var(--peri); }
+    .phase-Strategy    { background:rgba(232,205,160,0.15); color:var(--warn); }
+    .phase-Design      { background:rgba(232,205,160,0.15); color:var(--warn); }
+    .phase-Development { background:rgba(158,212,180,0.15); color:var(--success); }
+    .phase-Launch      { background:rgba(158,212,180,0.25); color:var(--success); }
+    .phase-Active      { background:rgba(158,212,180,0.15); color:var(--success); }
+    .phase-Complete    { background:rgba(255,255,255,0.07); color:var(--cream-dim); }
+
+    .status-dot { width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:7px; }
+    .dot-active   { background:var(--success); box-shadow:0 0 6px rgba(158,212,180,0.5); }
+    .dot-inactive { background:rgba(237,232,226,0.2); }
+
+    .action-link { color:var(--peri); font-size:12px; text-decoration:none; }
+    .action-link:hover { text-decoration:underline; }
+
+    .empty-state {
+      text-align:center; padding:60px 20px; color:var(--cream-dim); font-size:14px;
+    }
+    .empty-state p { margin-top:8px; font-size:12px; opacity:0.7; }
+
+    /* ── Pending items panel ── */
+    .two-col { display:grid; grid-template-columns:1fr 320px; gap:24px; margin-top:32px; }
+    .panel { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:28px; }
+    .panel-title { font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--cream-dim); margin-bottom:20px; }
+    .pending-item {
+      padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.05);
+      font-size:13px;
+    }
+    .pending-item:last-child { border-bottom:none; padding-bottom:0; }
+    .pending-item-title { color:var(--cream); margin-bottom:4px; }
+    .pending-item-meta { font-size:11px; color:var(--cream-dim); }
+    .pending-dot { width:6px;height:6px;border-radius:50%;background:var(--warn);display:inline-block;margin-right:8px; }
+
+    @media (max-width:1100px) { .stats-row { grid-template-columns:repeat(2,1fr); } .two-col { grid-template-columns:1fr; } }
+    @media (max-width:768px) { .sidebar { display:none; } .main { padding:32px 24px; } }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-mark">EBG HQ <span>Admin Panel</span></div>
+    <a class="nav-item active" href="/hq/admin/"><span class="nav-icon">◈</span> Dashboard</a>
+    <a class="nav-item" href="/hq/admin/client.html?new=1"><span class="nav-icon">＋</span> New Client</a>
+    <div class="sidebar-spacer"></div>
+    <a class="nav-item nav-signout" onclick="signOut()" href="#">
+      <span class="nav-icon">→</span> Sign Out
+    </a>
+  </nav>
+
+  <!-- Main -->
+  <main class="main">
+    <div class="page-header">
+      <p class="page-eyebrow">Admin Dashboard</p>
+      <h1 class="page-title">Your clients, <em>at a glance.</em></h1>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat-card"><p class="stat-label">Active Clients</p><p class="stat-val" id="statActive">—</p></div>
+      <div class="stat-card"><p class="stat-label">Total Clients</p><p class="stat-val" id="statTotal">—</p></div>
+      <div class="stat-card"><p class="stat-label">Pending Approvals</p><p class="stat-val" id="statApprovals">—</p></div>
+      <div class="stat-card"><p class="stat-label">Open Requests</p><p class="stat-val" id="statRequests">—</p></div>
+    </div>
+
+    <!-- Clients Table -->
+    <div class="section-header">
+      <p class="section-title">All Clients</p>
+      <button class="btn-new" onclick="window.location='/hq/admin/client.html?new=1'">+ Add Client</button>
+    </div>
+
+    <table class="clients-table">
+      <thead>
+        <tr>
+          <th>Client</th>
+          <th>Phase</th>
+          <th>Services</th>
+          <th>Launch Date</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="clientsBody">
+        <tr><td colspan="6"><div class="empty-state">Loading clients…</div></td></tr>
+      </tbody>
+    </table>
+
+    <!-- Bottom panels -->
+    <div class="two-col">
+      <div class="panel">
+        <p class="panel-title">Pending Approvals</p>
+        <div id="pendingApprovals"><p style="font-size:13px;color:var(--cream-dim);">Loading…</p></div>
+      </div>
+      <div class="panel">
+        <p class="panel-title">Open Requests</p>
+        <div id="openRequests"><p style="font-size:13px;color:var(--cream-dim);">Loading…</p></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://krchnbfpqcibmcggjvtm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9dGqi3potpSMF3T7GUh3KA_Vvzsbsnn';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Auth guard
+  (async () => {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = '/hq/'; return; }
+    const { data: admin } = await sb.from('admin_users').select('id').eq('user_id', session.user.id).single();
+    if (!admin) { window.location.href = '/hq/dashboard.html'; return; }
+    loadDashboard();
+  })();
+
+  async function loadDashboard() {
+    const [clientsRes, approvalsRes, requestsRes] = await Promise.all([
+      sb.from('clients').select('*').order('created_at', { ascending: false }),
+      sb.from('approvals').select('id,title,client_id,clients(business_name)').eq('status','pending'),
+      sb.from('requests').select('id,subject,request_type,client_id,clients(business_name)').eq('status','open').order('created_at', { ascending: false })
+    ]);
+
+    const clients   = clientsRes.data   || [];
+    const approvals = approvalsRes.data  || [];
+    const requests  = requestsRes.data   || [];
+
+    // Stats
+    document.getElementById('statActive').textContent    = clients.filter(c=>c.is_active).length;
+    document.getElementById('statTotal').textContent     = clients.length;
+    document.getElementById('statApprovals').textContent = approvals.length;
+    document.getElementById('statRequests').textContent  = requests.length;
+
+    // Clients table
+    const tbody = document.getElementById('clientsBody');
+    if (!clients.length) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">No clients yet.<p>Click "Add Client" to get started.</p></div></td></tr>`;
+    } else {
+      tbody.innerHTML = clients.map(c => {
+        const services = Array.isArray(c.services) ? c.services.join(', ') : (c.services || '—');
+        const launch   = c.launch_date ? new Date(c.launch_date).toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}) : '—';
+        const phase    = c.project_phase || 'Onboarding';
+        const phaseKey = phase.replace(/\s+/g,'');
+        return `<tr onclick="window.location='/hq/admin/client.html?id=${c.id}'">
+          <td>
+            <strong style="font-weight:400">${c.business_name}</strong>
+            ${c.contact_name ? `<br><span style="font-size:11px;color:var(--cream-dim)">${c.contact_name}</span>` : ''}
+          </td>
+          <td><span class="phase-badge phase-${phaseKey}">${phase}</span></td>
+          <td style="font-size:12px;color:var(--cream-dim);max-width:180px">${services}</td>
+          <td style="font-size:13px">${launch}</td>
+          <td>
+            <span class="status-dot ${c.is_active ? 'dot-active' : 'dot-inactive'}"></span>
+            ${c.is_active ? 'Active' : 'Inactive'}
+          </td>
+          <td><a class="action-link" href="/hq/admin/client.html?id=${c.id}" onclick="event.stopPropagation()">Edit →</a></td>
+        </tr>`;
+      }).join('');
+    }
+
+    // Pending approvals
+    const aEl = document.getElementById('pendingApprovals');
+    if (!approvals.length) {
+      aEl.innerHTML = `<p style="font-size:13px;color:var(--cream-dim)">No pending approvals.</p>`;
+    } else {
+      aEl.innerHTML = approvals.slice(0,6).map(a => `
+        <div class="pending-item">
+          <p class="pending-item-title"><span class="pending-dot"></span>${a.title}</p>
+          <p class="pending-item-meta">${a.clients?.business_name || 'Unknown client'}</p>
+        </div>`).join('');
+    }
+
+    // Open requests
+    const rEl = document.getElementById('openRequests');
+    if (!requests.length) {
+      rEl.innerHTML = `<p style="font-size:13px;color:var(--cream-dim)">No open requests.</p>`;
+    } else {
+      rEl.innerHTML = requests.slice(0,6).map(r => `
+        <div class="pending-item">
+          <p class="pending-item-title"><span class="pending-dot"></span>${r.subject}</p>
+          <p class="pending-item-meta">${r.clients?.business_name || '—'} · ${r.request_type}</p>
+        </div>`).join('');
+    }
+  }
+
+  async function signOut() {
+    await sb.auth.signOut();
+    window.location.href = '/hq/';
+  }
+</script>
+</body>
+</html>

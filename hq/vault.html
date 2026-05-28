@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBG HQ — Brand Vault</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root { --bg:#080810; --bg2:#0d0d1a; --panel:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.08); --cream:#EDE8E2; --cream-dim:rgba(237,232,226,0.55); --peri:#B8C9E8; --peri-dim:rgba(184,201,232,0.15); --success:#9ED4B4; }
+    html,body { height:100%; background:var(--bg); color:var(--cream); font-family:'Jost',sans-serif; font-weight:300; }
+    .layout { display:flex; min-height:100vh; }
+    .sidebar { width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:32px 0 24px;position:sticky;top:0;height:100vh;overflow:auto; }
+    .sidebar-mark { font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--peri);padding:0 28px 28px;border-bottom:1px solid var(--border);margin-bottom:24px; }
+    .sidebar-mark span { display:block;font-size:10px;color:var(--cream-dim);margin-top:2px;font-family:'Jost',sans-serif; }
+    .nav-item { display:flex;align-items:center;gap:12px;padding:11px 28px;font-size:13px;color:var(--cream-dim);cursor:pointer;transition:all 0.15s;text-decoration:none;border-left:2px solid transparent; }
+    .nav-item:hover { color:var(--cream);background:rgba(255,255,255,0.03); }
+    .nav-item.active { color:var(--peri);border-left-color:var(--peri);background:var(--peri-dim); }
+    .nav-icon { font-size:15px;width:18px;text-align:center; }
+    .sidebar-spacer { flex:1; }
+    .nav-signout { color:rgba(237,232,226,0.3);font-size:12px; }
+    .main { flex:1;padding:48px 52px;overflow:auto; }
+    .page-eyebrow { font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--peri);margin-bottom:10px; }
+    .page-title { font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;margin-bottom:36px; }
+    .page-title em { font-style:italic; }
+
+    /* Category sections */
+    .vault-section { margin-bottom:40px; }
+    .vault-section-title { font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cream-dim);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border); }
+
+    /* Colours */
+    .colours-row { display:flex;flex-wrap:wrap;gap:12px; }
+    .colour-chip {
+      display:flex;align-items:center;gap:12px;padding:12px 18px;
+      background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    }
+    .colour-swatch { width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,0.1); }
+    .colour-name { font-size:13px; }
+    .colour-hex { font-size:11px;color:var(--cream-dim);font-family:monospace; }
+
+    /* Logos / Images */
+    .assets-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px; }
+    .asset-card {
+      background:var(--panel);border:1px solid var(--border);border-radius:12px;
+      overflow:hidden;cursor:pointer;transition:border-color 0.15s;text-decoration:none;color:var(--cream);
+    }
+    .asset-card:hover { border-color:rgba(184,201,232,0.35); }
+    .asset-preview {
+      width:100%;height:140px;display:flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,0.03);font-size:36px;
+    }
+    .asset-preview img { max-width:100%;max-height:100%;object-fit:contain;padding:16px; }
+    .asset-info { padding:14px 16px; }
+    .asset-name { font-size:13px;margin-bottom:4px; }
+    .asset-type { font-size:11px;color:var(--cream-dim);letter-spacing:0.06em;text-transform:uppercase; }
+
+    /* Fonts */
+    .font-card {
+      background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px 28px;
+      display:flex;align-items:center;gap:20px;margin-bottom:10px;
+    }
+    .font-sample { font-size:32px;font-weight:300;min-width:80px; }
+    .font-name { font-size:13px; }
+    .font-detail { font-size:11px;color:var(--cream-dim);margin-top:2px; }
+
+    .empty-section { font-size:13px;color:var(--cream-dim); }
+
+    @media (max-width:768px) { .sidebar{display:none;} .main{padding:32px 20px;} }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-mark">EBG HQ <span id="sidebarBiz">Brand HQ</span></div>
+    <a class="nav-item" href="/hq/dashboard.html"><span class="nav-icon">◈</span> Home</a>
+    <a class="nav-item active" href="/hq/vault.html"><span class="nav-icon">⊞</span> Brand Vault</a>
+    <a class="nav-item" href="/hq/roadmap.html"><span class="nav-icon">⊟</span> Roadmap</a>
+    <a class="nav-item" href="/hq/approvals.html"><span class="nav-icon">✓</span> Approvals</a>
+    <a class="nav-item" href="/hq/requests.html"><span class="nav-icon">✉</span> Request Desk</a>
+    <div class="sidebar-spacer"></div>
+    <a class="nav-item nav-signout" onclick="signOut()" href="#"><span class="nav-icon">→</span> Sign Out</a>
+  </nav>
+
+  <main class="main">
+    <p class="page-eyebrow">Brand Vault</p>
+    <h1 class="page-title">Everything that makes you, <em>you.</em></h1>
+
+    <div id="vaultContent"><p style="color:var(--cream-dim);font-size:14px">Loading your brand assets…</p></div>
+  </main>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://krchnbfpqcibmcggjvtm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9dGqi3potpSMF3T7GUh3KA_Vvzsbsnn';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  (async () => {
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session) { window.location.href='/hq/'; return; }
+
+    const { data:client } = await sb.from('clients').select('*').eq('user_id',session.user.id).single();
+    if (!client) { document.getElementById('vaultContent').innerHTML='<p style="color:var(--cream-dim)">No client profile found. Contact EBG Creative.</p>'; return; }
+
+    document.getElementById('sidebarBiz').textContent = client.business_name;
+
+    const { data:assets } = await sb.from('brand_assets').select('*').eq('client_id',client.id).order('asset_type');
+    const all = assets || [];
+
+    const byType = {};
+    all.forEach(a => { (byType[a.asset_type] = byType[a.asset_type]||[]).push(a); });
+
+    const TYPE_ORDER = ['colour','logo','font','template','document','image','other'];
+    const TYPE_LABELS = { colour:'Brand Colours', logo:'Logos', font:'Typography', template:'Templates', document:'Documents', image:'Images', other:'Other Assets' };
+    const TYPE_ICONS  = { logo:'◈', font:'Aa', colour:'●', template:'⊞', document:'⊟', image:'◻', other:'◦' };
+
+    let html = '';
+    if (!all.length) {
+      html = '<p style="color:var(--cream-dim);font-size:14px">Your brand assets will appear here once EBG Creative uploads them.</p>';
+    } else {
+      for (const type of TYPE_ORDER) {
+        const items = byType[type];
+        if (!items || !items.length) continue;
+        html += `<div class="vault-section"><p class="vault-section-title">${TYPE_LABELS[type]||type}</p>`;
+
+        if (type === 'colour') {
+          html += '<div class="colours-row">';
+          items.forEach(a => {
+            html += `<div class="colour-chip">
+              <div class="colour-swatch" style="background:${a.colour_hex||'#ccc'}"></div>
+              <div><p class="colour-name">${a.name}</p><p class="colour-hex">${a.colour_hex||''}</p></div>
+            </div>`;
+          });
+          html += '</div>';
+        } else if (type === 'font') {
+          items.forEach(a => {
+            html += `<div class="font-card">
+              <div class="font-sample" style="font-family:serif">Aa</div>
+              <div><p class="font-name">${a.name}</p><p class="font-detail">Typography</p>
+              ${a.file_url ? `<a href="${a.file_url}" download style="font-size:12px;color:var(--peri);text-decoration:none;margin-top:6px;display:inline-block">Download ↓</a>` : ''}
+              </div>
+            </div>`;
+          });
+        } else {
+          html += '<div class="assets-grid">';
+          items.forEach(a => {
+            const isImg = a.file_name && /\.(png|jpg|jpeg|webp|svg|gif)$/i.test(a.file_name);
+            html += `<a class="asset-card" href="${a.file_url||'#'}" target="_blank" rel="noopener">
+              <div class="asset-preview">
+                ${isImg && a.file_url ? `<img src="${a.file_url}" alt="${a.name}">` : `<span>${TYPE_ICONS[a.asset_type]||'◦'}</span>`}
+              </div>
+              <div class="asset-info">
+                <p class="asset-name">${a.name}</p>
+                <p class="asset-type">${a.asset_type}</p>
+              </div>
+            </a>`;
+          });
+          html += '</div>';
+        }
+        html += '</div>';
+      }
+    }
+
+    document.getElementById('vaultContent').innerHTML = html;
+  })();
+
+  async function signOut() { await sb.auth.signOut(); window.location.href='/hq/'; }
+</script>
+</body>
+</html>

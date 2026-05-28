@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBG HQ — Client Editor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#080810; --bg2:#0d0d1a; --panel:rgba(255,255,255,0.04);
+      --border:rgba(255,255,255,0.08); --cream:#EDE8E2;
+      --cream-dim:rgba(237,232,226,0.55); --peri:#B8C9E8;
+      --peri-dim:rgba(184,201,232,0.15); --success:#9ED4B4; --warn:#E8CDA0; --error:#E8A0A0;
+    }
+    html,body { height:100%; background:var(--bg); color:var(--cream); font-family:'Jost',sans-serif; font-weight:300; }
+    .layout { display:flex; min-height:100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      width:220px;min-width:220px; background:var(--bg2);
+      border-right:1px solid var(--border);
+      display:flex;flex-direction:column; padding:32px 0 24px;
+      position:sticky;top:0;height:100vh;overflow:auto;
+    }
+    .sidebar-mark { font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--peri);padding:0 28px 28px;border-bottom:1px solid var(--border);margin-bottom:24px; }
+    .sidebar-mark span { display:block;font-size:10px;color:var(--cream-dim);margin-top:2px;letter-spacing:0.1em; }
+    .nav-item { display:flex;align-items:center;gap:12px;padding:11px 28px;font-size:13px;color:var(--cream-dim);cursor:pointer;transition:all 0.15s;text-decoration:none;border-left:2px solid transparent; }
+    .nav-item:hover { color:var(--cream);background:rgba(255,255,255,0.03); }
+    .nav-item.active { color:var(--peri);border-left-color:var(--peri);background:var(--peri-dim); }
+    .nav-icon { font-size:15px;width:18px;text-align:center; }
+    .sidebar-spacer { flex:1; }
+    .nav-signout { color:rgba(237,232,226,0.3);font-size:12px; }
+    .nav-signout:hover { color:var(--cream-dim); }
+
+    /* Main */
+    .main { flex:1;padding:48px 52px;overflow:auto; }
+    .page-eyebrow { font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--peri);margin-bottom:10px; }
+    .page-header { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:40px; }
+    .page-title { font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300; }
+    .page-title em { font-style:italic; }
+    .header-actions { display:flex;gap:12px;align-items:center;margin-top:8px; }
+    .btn { padding:10px 22px;border-radius:8px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.2s; }
+    .btn-primary { background:var(--peri);color:#080810; }
+    .btn-primary:hover { opacity:0.85; }
+    .btn-primary:disabled { opacity:0.4;cursor:not-allowed; }
+    .btn-ghost { background:transparent;color:var(--cream-dim);border:1px solid var(--border); }
+    .btn-ghost:hover { color:var(--cream);border-color:rgba(255,255,255,0.2); }
+    .btn-danger { background:transparent;color:var(--error);border:1px solid rgba(232,160,160,0.25); }
+    .btn-danger:hover { background:rgba(232,160,160,0.08); }
+
+    /* Tabs */
+    .tabs { display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:36px; }
+    .tab { padding:10px 20px;font-size:13px;color:var(--cream-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;margin-bottom:-1px; }
+    .tab:hover { color:var(--cream); }
+    .tab.active { color:var(--peri);border-bottom-color:var(--peri); }
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; }
+
+    /* Form grid */
+    .form-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px; }
+    .form-grid.thirds { grid-template-columns:1fr 1fr 1fr; }
+    .span2 { grid-column:span 2; }
+    .form-field { display:flex;flex-direction:column;gap:8px; }
+    .form-field label { font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--cream-dim); }
+    .form-field input, .form-field select, .form-field textarea {
+      background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;
+      padding:12px 14px;font-family:'Jost',sans-serif;font-size:13px;font-weight:300;
+      color:var(--cream);outline:none;transition:border-color 0.2s;
+    }
+    .form-field input::placeholder, .form-field textarea::placeholder { color:rgba(237,232,226,0.3); }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color:var(--peri); }
+    .form-field select option { background:#1a1a2e;color:var(--cream); }
+    .form-field textarea { resize:vertical;min-height:90px; }
+
+    /* Services checkboxes */
+    .services-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:10px; }
+    .service-check {
+      display:flex;align-items:center;gap:10px;padding:10px 14px;
+      background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;
+      cursor:pointer;transition:all 0.15s;font-size:13px;
+    }
+    .service-check:hover { border-color:rgba(184,201,232,0.3);background:var(--peri-dim); }
+    .service-check input { display:none; }
+    .service-check.checked { border-color:var(--peri);background:var(--peri-dim);color:var(--peri); }
+    .check-icon { width:16px;height:16px;border-radius:4px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0; }
+    .service-check.checked .check-icon { background:var(--peri);border-color:var(--peri);color:#080810; }
+
+    /* Section heading */
+    .section-heading { font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--cream-dim);margin:32px 0 16px;padding-bottom:10px;border-bottom:1px solid var(--border); }
+
+    /* Milestones */
+    .milestone-list { display:flex;flex-direction:column;gap:10px;margin-bottom:16px; }
+    .milestone-item {
+      display:grid;grid-template-columns:1fr 160px 40px 40px;gap:12px;align-items:center;
+      padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    }
+    .milestone-title { font-size:13px;color:var(--cream); }
+    .milestone-date { font-size:12px;color:var(--cream-dim); }
+    .milestone-done { font-size:16px;cursor:pointer;text-align:center; }
+    .milestone-del { font-size:14px;cursor:pointer;text-align:center;color:var(--error);opacity:0.6; }
+    .milestone-del:hover { opacity:1; }
+    .add-milestone-row { display:grid;grid-template-columns:1fr 160px auto;gap:12px; }
+
+    /* Vault (assets) */
+    .assets-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px; }
+    .asset-card {
+      background:var(--panel);border:1px solid var(--border);border-radius:10px;
+      padding:16px;cursor:pointer;transition:border-color 0.15s;
+    }
+    .asset-card:hover { border-color:rgba(184,201,232,0.3); }
+    .asset-type-icon { font-size:24px;margin-bottom:10px; }
+    .asset-name { font-size:13px;margin-bottom:4px; }
+    .asset-type-label { font-size:11px;color:var(--cream-dim);letter-spacing:0.06em;text-transform:uppercase; }
+    .asset-colour-swatch { width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);margin-bottom:10px; }
+    .upload-area {
+      border:2px dashed var(--border);border-radius:10px;padding:32px;text-align:center;
+      font-size:13px;color:var(--cream-dim);cursor:pointer;transition:all 0.2s;
+    }
+    .upload-area:hover { border-color:var(--peri);color:var(--cream); }
+    .upload-area input { display:none; }
+
+    /* Toast */
+    .toast {
+      position:fixed;bottom:32px;right:32px;padding:14px 22px;
+      background:rgba(158,212,180,0.1);border:1px solid rgba(158,212,180,0.25);
+      border-radius:10px;font-size:13px;color:var(--success);
+      transform:translateY(80px);opacity:0;transition:all 0.3s;z-index:100;
+    }
+    .toast.show { transform:translateY(0);opacity:1; }
+    .toast.error { background:rgba(232,160,160,0.1);border-color:rgba(232,160,160,0.25);color:var(--error); }
+
+    /* Updates feed */
+    .update-form { display:flex;gap:12px;margin-bottom:20px; }
+    .update-list { display:flex;flex-direction:column;gap:0; }
+    .update-item { padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px; }
+    .update-item:last-child { border-bottom:none; }
+    .update-msg { color:var(--cream);margin-bottom:4px; }
+    .update-meta { font-size:11px;color:var(--cream-dim); }
+
+    /* Password invite */
+    .invite-box { background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px 28px; }
+    .invite-title { font-size:13px;font-weight:400;margin-bottom:8px; }
+    .invite-sub { font-size:12px;color:var(--cream-dim);margin-bottom:20px;line-height:1.6; }
+
+    @media (max-width:900px) {
+      .form-grid { grid-template-columns:1fr; }
+      .form-grid.thirds { grid-template-columns:1fr 1fr; }
+      .span2 { grid-column:span 1; }
+    }
+    @media (max-width:768px) { .sidebar { display:none; } .main { padding:32px 20px; } }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-mark">EBG HQ <span>Admin Panel</span></div>
+    <a class="nav-item" href="/hq/admin/"><span class="nav-icon">◈</span> Dashboard</a>
+    <a class="nav-item active" href="#"><span class="nav-icon">✎</span> Client Editor</a>
+    <div class="sidebar-spacer"></div>
+    <a class="nav-item nav-signout" onclick="signOut()" href="#"><span class="nav-icon">→</span> Sign Out</a>
+  </nav>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <p class="page-eyebrow" id="pageEyebrow">New Client</p>
+        <h1 class="page-title" id="pageTitle"><em>Create a client profile.</em></h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost" onclick="window.location='/hq/admin/'">← Back</button>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveClient()">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('profile')">Profile</div>
+      <div class="tab" onclick="switchTab('milestones')">Milestones</div>
+      <div class="tab" onclick="switchTab('vault')">Brand Vault</div>
+      <div class="tab" onclick="switchTab('updates')">Updates</div>
+      <div class="tab" onclick="switchTab('access')">Access</div>
+    </div>
+
+    <!-- Tab: Profile -->
+    <div class="tab-pane active" id="tab-profile">
+      <p class="section-heading">Business Information</p>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Business Name *</label>
+          <input type="text" id="f-business_name" placeholder="Maple & Co." required>
+        </div>
+        <div class="form-field">
+          <label>Contact Name</label>
+          <input type="text" id="f-contact_name" placeholder="Jordan Smith">
+        </div>
+        <div class="form-field">
+          <label>Email</label>
+          <input type="email" id="f-email" placeholder="jordan@mapleandco.ca">
+        </div>
+        <div class="form-field">
+          <label>Phone</label>
+          <input type="tel" id="f-phone" placeholder="+1 (416) 000-0000">
+        </div>
+        <div class="form-field">
+          <label>Website</label>
+          <input type="url" id="f-website" placeholder="https://mapleandco.ca">
+        </div>
+        <div class="form-field">
+          <label>Industry</label>
+          <input type="text" id="f-industry" placeholder="Retail / Food & Beverage / etc.">
+        </div>
+      </div>
+
+      <p class="section-heading">Services</p>
+      <div class="services-grid" id="servicesGrid">
+        <!-- Rendered by JS -->
+      </div>
+
+      <p class="section-heading">Project Details</p>
+      <div class="form-grid thirds">
+        <div class="form-field">
+          <label>Project Phase</label>
+          <select id="f-project_phase">
+            <option>Onboarding</option>
+            <option>Discovery</option>
+            <option>Strategy</option>
+            <option>Design</option>
+            <option>Development</option>
+            <option>Launch</option>
+            <option>Active</option>
+            <option>Complete</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Start Date</label>
+          <input type="date" id="f-start_date">
+        </div>
+        <div class="form-field">
+          <label>Launch Date</label>
+          <input type="date" id="f-launch_date">
+        </div>
+        <div class="form-field span2">
+          <label>Goals / Scope</label>
+          <textarea id="f-goals" placeholder="What are we trying to achieve?"></textarea>
+        </div>
+        <div class="form-field">
+          <label>Status</label>
+          <select id="f-is_active">
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="section-heading">Brand Details</p>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Brand Colours</label>
+          <input type="text" id="f-brand_colours" placeholder="#B8C9E8, #EDE8E2, #080810">
+        </div>
+        <div class="form-field">
+          <label>Brand Fonts</label>
+          <input type="text" id="f-brand_fonts" placeholder="Cormorant Garamond, Jost">
+        </div>
+        <div class="form-field">
+          <label>Brand Personality</label>
+          <input type="text" id="f-brand_personality" placeholder="Bold, Approachable, Minimal">
+        </div>
+        <div class="form-field">
+          <label>Target Audience</label>
+          <input type="text" id="f-target_audience" placeholder="Women 25–40, small biz owners">
+        </div>
+        <div class="form-field span2">
+          <label>Internal Notes</label>
+          <textarea id="f-notes" placeholder="Anything useful to remember about this client…"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Milestones -->
+    <div class="tab-pane" id="tab-milestones">
+      <p class="section-heading">Project Milestones</p>
+      <div class="milestone-list" id="milestoneList"></div>
+      <div class="add-milestone-row">
+        <input type="text" id="ms-title" placeholder="Milestone title (e.g. Logo Concepts Delivered)" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:13px;color:var(--cream);outline:none;">
+        <input type="date" id="ms-date" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:13px;color:var(--cream);outline:none;">
+        <button class="btn btn-primary" onclick="addMilestone()">Add</button>
+      </div>
+    </div>
+
+    <!-- Tab: Brand Vault -->
+    <div class="tab-pane" id="tab-vault">
+      <p class="section-heading">Brand Assets</p>
+      <div class="assets-grid" id="assetsGrid"></div>
+
+      <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" multiple onchange="uploadFiles(this.files)">
+        <p style="font-size:22px;margin-bottom:8px">↑</p>
+        <p>Click to upload files or drag and drop</p>
+        <p style="font-size:11px;opacity:0.6;margin-top:4px">PDF, PNG, JPG, SVG, ZIP, TTF, OTF</p>
+      </div>
+
+      <p class="section-heading">Add Colour</p>
+      <div style="display:flex;gap:12px;align-items:flex-end">
+        <div class="form-field" style="flex:1">
+          <label>Colour Name</label>
+          <input type="text" id="col-name" placeholder="Periwinkle">
+        </div>
+        <div class="form-field">
+          <label>Hex</label>
+          <input type="text" id="col-hex" placeholder="#B8C9E8" maxlength="7" style="width:130px">
+        </div>
+        <button class="btn btn-primary" onclick="addColour()">Add Colour</button>
+      </div>
+    </div>
+
+    <!-- Tab: Updates -->
+    <div class="tab-pane" id="tab-updates">
+      <p class="section-heading">Post an Update</p>
+      <div class="update-form">
+        <input type="text" id="upd-msg" placeholder="What's the latest?" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:13px;color:var(--cream);outline:none;">
+        <select id="upd-type" style="background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:13px;color:var(--cream);outline:none;">
+          <option value="general">General</option>
+          <option value="milestone">Milestone</option>
+          <option value="approval">Approval</option>
+          <option value="file">File Added</option>
+        </select>
+        <button class="btn btn-primary" onclick="postUpdate()">Post</button>
+      </div>
+      <div class="update-list" id="updateList"></div>
+    </div>
+
+    <!-- Tab: Access -->
+    <div class="tab-pane" id="tab-access">
+      <p class="section-heading">Client Portal Access</p>
+      <div class="invite-box">
+        <p class="invite-title">Invite Client to HQ</p>
+        <p class="invite-sub">
+          Send the client an invitation email so they can create their password and access their Brand HQ.
+          Their dashboard will show their phase, brand vault, approvals, and more — only their own data.
+        </p>
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+          <div class="form-field" style="flex:1;min-width:220px">
+            <label>Client Email</label>
+            <input type="email" id="inv-email" placeholder="jordan@mapleandco.ca">
+          </div>
+          <button class="btn btn-primary" onclick="sendInvite()">Send Invite</button>
+        </div>
+        <p id="inviteStatus" style="margin-top:14px;font-size:12px;color:var(--cream-dim);display:none"></p>
+      </div>
+
+      <p class="section-heading">Danger Zone</p>
+      <button class="btn btn-danger" onclick="deleteClient()">Delete Client Profile</button>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUPABASE_URL = 'https://krchnbfpqcibmcggjvtm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9dGqi3potpSMF3T7GUh3KA_Vvzsbsnn';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const SERVICES = [
+    'Social media management',
+    'Website development',
+    'Canva templates',
+    'Document formatting',
+    'Content strategy',
+    'Branding',
+  ];
+
+  const ASSET_ICONS = { logo:'◈', font:'Aa', colour:'●', template:'⊞', document:'⊟', image:'◻', other:'◦' };
+
+  let clientId   = null;
+  let milestones = [];
+  let assets     = [];
+  let updates    = [];
+  let selectedServices = [];
+
+  // Auth guard
+  (async () => {
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session) { window.location.href = '/hq/'; return; }
+    const { data:admin } = await sb.from('admin_users').select('id').eq('user_id',session.user.id).single();
+    if (!admin) { window.location.href = '/hq/dashboard.html'; return; }
+
+    const params = new URLSearchParams(window.location.search);
+    clientId = params.get('id');
+    renderServices();
+    if (clientId) loadClient();
+    else {
+      document.getElementById('pageEyebrow').textContent = 'New Client';
+      document.getElementById('pageTitle').innerHTML = '<em>Create a client profile.</em>';
+    }
+  })();
+
+  function renderServices() {
+    const grid = document.getElementById('servicesGrid');
+    grid.innerHTML = SERVICES.map(s => `
+      <label class="service-check${selectedServices.includes(s) ? ' checked' : ''}" onclick="toggleService(this,'${s}')">
+        <input type="checkbox" ${selectedServices.includes(s)?'checked':''}>
+        <span class="check-icon">${selectedServices.includes(s)?'✓':''}</span>
+        <span>${s}</span>
+      </label>`).join('');
+  }
+
+  function toggleService(el, name) {
+    if (selectedServices.includes(name)) {
+      selectedServices = selectedServices.filter(s=>s!==name);
+      el.classList.remove('checked');
+      el.querySelector('.check-icon').textContent = '';
+    } else {
+      selectedServices.push(name);
+      el.classList.add('checked');
+      el.querySelector('.check-icon').textContent = '✓';
+    }
+  }
+
+  async function loadClient() {
+    document.getElementById('pageEyebrow').textContent = 'Edit Client';
+
+    const [{ data:c }, { data:ms }, { data:as }, { data:ups }] = await Promise.all([
+      sb.from('clients').select('*').eq('id',clientId).single(),
+      sb.from('milestones').select('*').eq('client_id',clientId).order('sort_order'),
+      sb.from('brand_assets').select('*').eq('client_id',clientId).order('created_at'),
+      sb.from('updates').select('*').eq('client_id',clientId).order('created_at',{ascending:false})
+    ]);
+
+    if (!c) { showToast('Client not found','error'); return; }
+
+    document.getElementById('pageTitle').innerHTML = `<em>${c.business_name}</em>`;
+    document.getElementById('f-business_name').value = c.business_name || '';
+    document.getElementById('f-contact_name').value  = c.contact_name  || '';
+    document.getElementById('f-email').value         = c.email         || '';
+    document.getElementById('f-phone').value         = c.phone         || '';
+    document.getElementById('f-website').value       = c.website       || '';
+    document.getElementById('f-industry').value      = c.industry      || '';
+    document.getElementById('f-project_phase').value = c.project_phase || 'Onboarding';
+    document.getElementById('f-start_date').value    = c.start_date    || '';
+    document.getElementById('f-launch_date').value   = c.launch_date   || '';
+    document.getElementById('f-goals').value         = c.goals         || '';
+    document.getElementById('f-is_active').value     = String(c.is_active);
+    document.getElementById('f-brand_colours').value    = c.brand_colours    || '';
+    document.getElementById('f-brand_fonts').value      = c.brand_fonts      || '';
+    document.getElementById('f-brand_personality').value= c.brand_personality|| '';
+    document.getElementById('f-target_audience').value  = c.target_audience  || '';
+    document.getElementById('f-notes').value         = c.notes         || '';
+    document.getElementById('inv-email').value       = c.email         || '';
+
+    selectedServices = Array.isArray(c.services) ? c.services : [];
+    renderServices();
+
+    milestones = ms || [];
+    assets     = as || [];
+    updates    = ups || [];
+    renderMilestones();
+    renderAssets();
+    renderUpdates();
+  }
+
+  // ── Save ──
+  async function saveClient() {
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    const payload = {
+      business_name:     document.getElementById('f-business_name').value.trim(),
+      contact_name:      document.getElementById('f-contact_name').value.trim(),
+      email:             document.getElementById('f-email').value.trim(),
+      phone:             document.getElementById('f-phone').value.trim(),
+      website:           document.getElementById('f-website').value.trim(),
+      industry:          document.getElementById('f-industry').value.trim(),
+      services:          selectedServices,
+      project_phase:     document.getElementById('f-project_phase').value,
+      start_date:        document.getElementById('f-start_date').value || null,
+      launch_date:       document.getElementById('f-launch_date').value || null,
+      goals:             document.getElementById('f-goals').value.trim(),
+      is_active:         document.getElementById('f-is_active').value === 'true',
+      brand_colours:     document.getElementById('f-brand_colours').value.trim(),
+      brand_fonts:       document.getElementById('f-brand_fonts').value.trim(),
+      brand_personality: document.getElementById('f-brand_personality').value.trim(),
+      target_audience:   document.getElementById('f-target_audience').value.trim(),
+      notes:             document.getElementById('f-notes').value.trim(),
+    };
+
+    if (!payload.business_name) { showToast('Business name is required','error'); btn.disabled=false; btn.textContent='Save Changes'; return; }
+
+    let error;
+    if (clientId) {
+      ({ error } = await sb.from('clients').update(payload).eq('id',clientId));
+    } else {
+      const res = await sb.from('clients').insert(payload).select().single();
+      error = res.error;
+      if (!error) { clientId = res.data.id; window.history.replaceState(null,'',`/hq/admin/client.html?id=${clientId}`); }
+    }
+
+    btn.disabled=false; btn.textContent='Save Changes';
+    if (error) showToast('Error: '+error.message,'error');
+    else { showToast('Client saved'); document.getElementById('pageTitle').innerHTML = `<em>${payload.business_name}</em>`; }
+  }
+
+  // ── Milestones ──
+  function renderMilestones() {
+    const el = document.getElementById('milestoneList');
+    if (!milestones.length) { el.innerHTML = '<p style="font-size:13px;color:var(--cream-dim)">No milestones yet.</p>'; return; }
+    el.innerHTML = milestones.map((m,i) => `
+      <div class="milestone-item">
+        <span class="milestone-title">${m.title}</span>
+        <span class="milestone-date">${m.due_date ? new Date(m.due_date+'T00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}) : '—'}</span>
+        <span class="milestone-done" onclick="toggleMilestone(${i})" title="${m.completed?'Mark incomplete':'Mark complete'}">${m.completed?'✓':'○'}</span>
+        <span class="milestone-del" onclick="removeMilestone(${i})">✕</span>
+      </div>`).join('');
+  }
+
+  async function addMilestone() {
+    if (!clientId) { showToast('Save the client profile first','error'); return; }
+    const title = document.getElementById('ms-title').value.trim();
+    const date  = document.getElementById('ms-date').value;
+    if (!title) return;
+    const { data,error } = await sb.from('milestones').insert({ client_id:clientId, title, due_date:date||null, sort_order:milestones.length }).select().single();
+    if (error) { showToast(error.message,'error'); return; }
+    milestones.push(data);
+    renderMilestones();
+    document.getElementById('ms-title').value = '';
+    document.getElementById('ms-date').value  = '';
+    showToast('Milestone added');
+  }
+
+  async function toggleMilestone(i) {
+    const m = milestones[i];
+    const now = m.completed ? null : new Date().toISOString();
+    await sb.from('milestones').update({ completed:!m.completed, completed_at:now }).eq('id',m.id);
+    milestones[i] = { ...m, completed:!m.completed, completed_at:now };
+    renderMilestones();
+  }
+
+  async function removeMilestone(i) {
+    if (!confirm('Remove this milestone?')) return;
+    await sb.from('milestones').delete().eq('id',milestones[i].id);
+    milestones.splice(i,1);
+    renderMilestones();
+    showToast('Milestone removed');
+  }
+
+  // ── Assets ──
+  function renderAssets() {
+    const grid = document.getElementById('assetsGrid');
+    if (!assets.length) { grid.innerHTML = ''; return; }
+    grid.innerHTML = assets.map(a => {
+      if (a.asset_type === 'colour') {
+        return `<div class="asset-card">
+          <div class="asset-colour-swatch" style="background:${a.colour_hex||'#ccc'}"></div>
+          <p class="asset-name">${a.name}</p>
+          <p class="asset-type-label">${a.colour_hex||''}</p>
+        </div>`;
+      }
+      const icon = ASSET_ICONS[a.asset_type] || '◦';
+      return `<div class="asset-card" onclick="window.open('${a.file_url}','_blank')">
+        <p class="asset-type-icon">${icon}</p>
+        <p class="asset-name">${a.name}</p>
+        <p class="asset-type-label">${a.asset_type}</p>
+      </div>`;
+    }).join('');
+  }
+
+  async function uploadFiles(files) {
+    if (!clientId) { showToast('Save the client profile first','error'); return; }
+    for (const file of files) {
+      const path = `${clientId}/${Date.now()}_${file.name}`;
+      const { error:upErr } = await sb.storage.from('brand-assets').upload(path, file);
+      if (upErr) { showToast('Upload error: '+upErr.message,'error'); continue; }
+      const { data:{ publicUrl } } = sb.storage.from('brand-assets').getPublicUrl(path);
+      const assetType = guessAssetType(file.name);
+      const { data, error } = await sb.from('brand_assets').insert({
+        client_id:clientId, name:file.name, asset_type:assetType,
+        file_url:publicUrl, file_name:file.name, file_size:file.size
+      }).select().single();
+      if (!error) { assets.push(data); renderAssets(); showToast(file.name+' uploaded'); }
+    }
+  }
+
+  async function addColour() {
+    if (!clientId) { showToast('Save the client profile first','error'); return; }
+    const name = document.getElementById('col-name').value.trim();
+    const hex  = document.getElementById('col-hex').value.trim();
+    if (!name || !hex) return;
+    const { data,error } = await sb.from('brand_assets').insert({ client_id:clientId, name, asset_type:'colour', colour_hex:hex }).select().single();
+    if (error) { showToast(error.message,'error'); return; }
+    assets.push(data); renderAssets();
+    document.getElementById('col-name').value='';
+    document.getElementById('col-hex').value='';
+    showToast('Colour added');
+  }
+
+  function guessAssetType(name) {
+    const ext = name.split('.').pop().toLowerCase();
+    if (['png','jpg','jpeg','webp','gif','svg'].includes(ext)) return 'image';
+    if (['pdf','docx','doc','pptx'].includes(ext)) return 'document';
+    if (['ttf','otf','woff','woff2'].includes(ext)) return 'font';
+    if (['zip','rar'].includes(ext)) return 'template';
+    return 'other';
+  }
+
+  // ── Updates ──
+  function renderUpdates() {
+    const el = document.getElementById('updateList');
+    if (!updates.length) { el.innerHTML = '<p style="font-size:13px;color:var(--cream-dim)">No updates yet.</p>'; return; }
+    el.innerHTML = updates.map(u => `
+      <div class="update-item">
+        <p class="update-msg">${u.message}</p>
+        <p class="update-meta">${u.update_type} · ${new Date(u.created_at).toLocaleString('en-CA',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</p>
+      </div>`).join('');
+  }
+
+  async function postUpdate() {
+    if (!clientId) { showToast('Save the client profile first','error'); return; }
+    const msg  = document.getElementById('upd-msg').value.trim();
+    const type = document.getElementById('upd-type').value;
+    if (!msg) return;
+    const { data,error } = await sb.from('updates').insert({ client_id:clientId, message:msg, update_type:type }).select().single();
+    if (error) { showToast(error.message,'error'); return; }
+    updates.unshift(data); renderUpdates();
+    document.getElementById('upd-msg').value = '';
+    showToast('Update posted');
+  }
+
+  // ── Access ──
+  async function sendInvite() {
+    const email = document.getElementById('inv-email').value.trim();
+    if (!email) return;
+    const statusEl = document.getElementById('inviteStatus');
+    statusEl.style.display='block'; statusEl.textContent='Sending…';
+
+    // Send magic link / invite email via Supabase Admin
+    // Note: inviteUserByEmail requires service role key — this is a placeholder
+    // In production, call a Supabase Edge Function that uses the service role
+    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.origin+'/hq/' } });
+    if (error) { statusEl.textContent='Error: '+error.message; statusEl.style.color='var(--error)'; return; }
+    statusEl.textContent = `Magic link sent to ${email}. They can set a password after signing in.`;
+    statusEl.style.color = 'var(--success)';
+
+    // Link this user to the client record once they sign up (done via trigger or admin)
+    showToast('Invite sent to '+email);
+  }
+
+  async function deleteClient() {
+    if (!clientId) return;
+    if (!confirm(`Delete this client profile? This cannot be undone.`)) return;
+    if (!confirm(`Are you absolutely sure? All milestones, assets, and data will be lost.`)) return;
+    const { error } = await sb.from('clients').delete().eq('id',clientId);
+    if (error) { showToast(error.message,'error'); return; }
+    window.location.href = '/hq/admin/';
+  }
+
+  // ── UI Helpers ──
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach((t,i) => {
+      const tabs = ['profile','milestones','vault','updates','access'];
+      t.classList.toggle('active', tabs[i]===name);
+    });
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-'+name).classList.add('active');
+  }
+
+  function showToast(msg, type='success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type==='error'?' error':'');
+    setTimeout(()=>el.classList.remove('show'),3000);
+  }
+
+  async function signOut() { await sb.auth.signOut(); window.location.href='/hq/'; }
+</script>
+</body>
+</html>

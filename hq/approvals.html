@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBG HQ — Approvals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root { --bg:#080810; --bg2:#0d0d1a; --panel:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.08); --cream:#EDE8E2; --cream-dim:rgba(237,232,226,0.55); --peri:#B8C9E8; --peri-dim:rgba(184,201,232,0.15); --success:#9ED4B4; --warn:#E8CDA0; --error:#E8A0A0; }
+    html,body { height:100%; background:var(--bg); color:var(--cream); font-family:'Jost',sans-serif; font-weight:300; }
+    .layout { display:flex; min-height:100vh; }
+    .sidebar { width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:32px 0 24px;position:sticky;top:0;height:100vh;overflow:auto; }
+    .sidebar-mark { font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--peri);padding:0 28px 28px;border-bottom:1px solid var(--border);margin-bottom:24px; }
+    .sidebar-mark span { display:block;font-size:10px;color:var(--cream-dim);margin-top:2px;font-family:'Jost',sans-serif; }
+    .nav-item { display:flex;align-items:center;gap:12px;padding:11px 28px;font-size:13px;color:var(--cream-dim);cursor:pointer;transition:all 0.15s;text-decoration:none;border-left:2px solid transparent; }
+    .nav-item:hover { color:var(--cream);background:rgba(255,255,255,0.03); }
+    .nav-item.active { color:var(--peri);border-left-color:var(--peri);background:var(--peri-dim); }
+    .nav-icon { font-size:15px;width:18px;text-align:center; }
+    .sidebar-spacer { flex:1; }
+    .nav-signout { color:rgba(237,232,226,0.3);font-size:12px; }
+    .main { flex:1;padding:48px 52px;overflow:auto; }
+    .page-eyebrow { font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--peri);margin-bottom:10px; }
+    .page-title { font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;margin-bottom:36px; }
+    .page-title em { font-style:italic; }
+
+    /* Approval cards */
+    .approval-list { display:flex;flex-direction:column;gap:16px; }
+    .approval-card { background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:28px 32px; }
+    .approval-card.approved { border-color:rgba(158,212,180,0.2);opacity:0.7; }
+    .approval-card.revision_requested { border-color:rgba(232,205,160,0.2); }
+    .ac-header { display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px; }
+    .ac-title { font-size:17px;font-weight:400; }
+    .ac-badge { display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;letter-spacing:0.06em;flex-shrink:0; }
+    .badge-pending  { background:rgba(184,201,232,0.15);color:var(--peri); }
+    .badge-approved { background:rgba(158,212,180,0.15);color:var(--success); }
+    .badge-revision { background:rgba(232,205,160,0.15);color:var(--warn); }
+    .ac-desc { font-size:13px;color:var(--cream-dim);margin-bottom:16px;line-height:1.6; }
+    .ac-files { display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px; }
+    .ac-file-link {
+      display:flex;align-items:center;gap:8px;padding:8px 14px;
+      background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;
+      font-size:12px;color:var(--peri);text-decoration:none;transition:all 0.15s;
+    }
+    .ac-file-link:hover { background:var(--peri-dim);border-color:rgba(184,201,232,0.3); }
+    .ac-actions { display:flex;gap:12px;flex-wrap:wrap; }
+    .btn { padding:10px 22px;border-radius:8px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.2s; }
+    .btn-approve { background:var(--success);color:#080810; }
+    .btn-approve:hover { opacity:0.85; }
+    .btn-approve:disabled { opacity:0.4;cursor:default; }
+    .btn-revise { background:transparent;color:var(--warn);border:1px solid rgba(232,205,160,0.3); }
+    .btn-revise:hover { background:rgba(232,205,160,0.08); }
+    .ac-revision-notes { margin-top:16px;padding:14px;background:rgba(232,205,160,0.06);border:1px solid rgba(232,205,160,0.15);border-radius:8px;font-size:13px;color:var(--warn);line-height:1.5; }
+
+    /* Revision input */
+    .revision-input-wrap { display:none;margin-top:16px; }
+    .revision-input-wrap.show { display:block; }
+    .revision-input-wrap textarea { width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:13px;color:var(--cream);outline:none;resize:vertical;min-height:80px; }
+    .revision-input-wrap textarea:focus { border-color:var(--peri); }
+    .revision-submit-row { display:flex;gap:10px;margin-top:10px; }
+
+    .toast { position:fixed;bottom:32px;right:32px;padding:14px 22px;background:rgba(158,212,180,0.1);border:1px solid rgba(158,212,180,0.25);border-radius:10px;font-size:13px;color:var(--success);transform:translateY(80px);opacity:0;transition:all 0.3s;z-index:100; }
+    .toast.show { transform:translateY(0);opacity:1; }
+
+    .empty-state { font-size:14px;color:var(--cream-dim);padding:40px 0; }
+
+    @media (max-width:768px) { .sidebar{display:none;} .main{padding:32px 20px;} .ac-header{flex-direction:column;} }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-mark">EBG HQ <span id="sidebarBiz">Brand HQ</span></div>
+    <a class="nav-item" href="/hq/dashboard.html"><span class="nav-icon">◈</span> Home</a>
+    <a class="nav-item" href="/hq/vault.html"><span class="nav-icon">⊞</span> Brand Vault</a>
+    <a class="nav-item" href="/hq/roadmap.html"><span class="nav-icon">⊟</span> Roadmap</a>
+    <a class="nav-item active" href="/hq/approvals.html"><span class="nav-icon">✓</span> Approvals</a>
+    <a class="nav-item" href="/hq/requests.html"><span class="nav-icon">✉</span> Request Desk</a>
+    <div class="sidebar-spacer"></div>
+    <a class="nav-item nav-signout" onclick="signOut()" href="#"><span class="nav-icon">→</span> Sign Out</a>
+  </nav>
+
+  <main class="main">
+    <p class="page-eyebrow">Approval Center</p>
+    <h1 class="page-title">Your review, <em>matters.</em></h1>
+    <div id="approvalsList"><p style="color:var(--cream-dim)">Loading…</p></div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  const SUPABASE_URL = 'https://krchnbfpqcibmcggjvtm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9dGqi3potpSMF3T7GUh3KA_Vvzsbsnn';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let clientId = null;
+
+  (async () => {
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session) { window.location.href='/hq/'; return; }
+
+    const { data:client } = await sb.from('clients').select('*').eq('user_id',session.user.id).single();
+    if (!client) return;
+    clientId = client.id;
+    document.getElementById('sidebarBiz').textContent = client.business_name;
+    loadApprovals();
+  })();
+
+  async function loadApprovals() {
+    const { data:approvals } = await sb.from('approvals').select('*').eq('client_id',clientId).order('created_at',{ascending:false});
+    const list = approvals || [];
+    const el = document.getElementById('approvalsList');
+
+    if (!list.length) {
+      el.innerHTML = '<p class="empty-state">No approvals yet. EBG Creative will post work here when it is ready for your review.</p>';
+      return;
+    }
+
+    el.innerHTML = '<div class="approval-list">'+list.map(a => {
+      const files  = Array.isArray(a.file_urls) ? a.file_urls : [];
+      const badge  = a.status==='approved' ? 'badge-approved' : a.status==='revision_requested' ? 'badge-revision' : 'badge-pending';
+      const label  = a.status==='approved' ? 'Approved' : a.status==='revision_requested' ? 'Revision Requested' : 'Awaiting Review';
+      const cardCls= a.status==='approved' ? 'approved' : a.status==='revision_requested' ? 'revision_requested' : '';
+
+      return `<div class="approval-card ${cardCls}" id="ac-${a.id}">
+        <div class="ac-header">
+          <p class="ac-title">${a.title}</p>
+          <span class="ac-badge ${badge}">${label}</span>
+        </div>
+        ${a.description ? `<p class="ac-desc">${a.description}</p>` : ''}
+        ${files.length ? `<div class="ac-files">${files.map((f,i)=>`<a class="ac-file-link" href="${f}" target="_blank">↗ View File ${files.length>1?i+1:''}</a>`).join('')}</div>` : ''}
+        ${a.status==='revision_requested' && a.revision_notes ? `<div class="ac-revision-notes">Revision notes: ${a.revision_notes}</div>` : ''}
+        ${a.status==='pending' ? `
+        <div class="ac-actions">
+          <button class="btn btn-approve" onclick="approve('${a.id}')">Approve</button>
+          <button class="btn btn-revise" onclick="toggleRevision('${a.id}')">Request Revision</button>
+        </div>
+        <div class="revision-input-wrap" id="rev-${a.id}">
+          <textarea placeholder="Describe the changes you'd like…" id="rev-text-${a.id}"></textarea>
+          <div class="revision-submit-row">
+            <button class="btn btn-revise" onclick="submitRevision('${a.id}')">Submit Revision Request</button>
+            <button class="btn" style="background:transparent;border:1px solid var(--border);color:var(--cream-dim)" onclick="toggleRevision('${a.id}')">Cancel</button>
+          </div>
+        </div>` : ''}
+      </div>`;
+    }).join('')+'</div>';
+  }
+
+  async function approve(id) {
+    await sb.from('approvals').update({ status:'approved' }).eq('id',id);
+    showToast('Approved!');
+    loadApprovals();
+  }
+
+  function toggleRevision(id) {
+    const el = document.getElementById('rev-'+id);
+    el.classList.toggle('show');
+  }
+
+  async function submitRevision(id) {
+    const notes = document.getElementById('rev-text-'+id).value.trim();
+    if (!notes) return;
+    await sb.from('approvals').update({ status:'revision_requested', revision_notes:notes }).eq('id',id);
+    showToast('Revision request submitted.');
+    loadApprovals();
+  }
+
+  function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'),3000);
+  }
+
+  async function signOut() { await sb.auth.signOut(); window.location.href='/hq/'; }
+</script>
+</body>
+</html>

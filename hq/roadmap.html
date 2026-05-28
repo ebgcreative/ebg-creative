@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBG HQ — Roadmap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root { --bg:#080810; --bg2:#0d0d1a; --panel:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.08); --cream:#EDE8E2; --cream-dim:rgba(237,232,226,0.55); --peri:#B8C9E8; --peri-dim:rgba(184,201,232,0.15); --success:#9ED4B4; }
+    html,body { height:100%; background:var(--bg); color:var(--cream); font-family:'Jost',sans-serif; font-weight:300; }
+    .layout { display:flex; min-height:100vh; }
+    .sidebar { width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:32px 0 24px;position:sticky;top:0;height:100vh;overflow:auto; }
+    .sidebar-mark { font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--peri);padding:0 28px 28px;border-bottom:1px solid var(--border);margin-bottom:24px; }
+    .sidebar-mark span { display:block;font-size:10px;color:var(--cream-dim);margin-top:2px;font-family:'Jost',sans-serif; }
+    .nav-item { display:flex;align-items:center;gap:12px;padding:11px 28px;font-size:13px;color:var(--cream-dim);cursor:pointer;transition:all 0.15s;text-decoration:none;border-left:2px solid transparent; }
+    .nav-item:hover { color:var(--cream);background:rgba(255,255,255,0.03); }
+    .nav-item.active { color:var(--peri);border-left-color:var(--peri);background:var(--peri-dim); }
+    .nav-icon { font-size:15px;width:18px;text-align:center; }
+    .sidebar-spacer { flex:1; }
+    .nav-signout { color:rgba(237,232,226,0.3);font-size:12px; }
+    .main { flex:1;padding:48px 52px;overflow:auto; }
+    .page-eyebrow { font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--peri);margin-bottom:10px; }
+    .page-title { font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;margin-bottom:12px; }
+    .page-title em { font-style:italic; }
+
+    /* Progress bar */
+    .progress-wrap { margin:0 0 48px; }
+    .progress-label { display:flex;justify-content:space-between;font-size:12px;color:var(--cream-dim);margin-bottom:10px; }
+    .progress-track { height:4px;background:rgba(255,255,255,0.07);border-radius:4px;overflow:hidden; }
+    .progress-fill { height:100%;background:linear-gradient(90deg,var(--peri),var(--success));border-radius:4px;transition:width 0.8s ease; }
+
+    /* Countdown banner */
+    .countdown-banner {
+      display:none;align-items:center;justify-content:space-between;
+      padding:24px 32px;background:linear-gradient(135deg,rgba(184,201,232,0.08),rgba(184,201,232,0.03));
+      border:1px solid rgba(184,201,232,0.2);border-radius:14px;margin-bottom:40px;
+    }
+    .countdown-banner.show { display:flex; }
+    .cb-label { font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--peri);margin-bottom:6px; }
+    .cb-date { font-size:14px;color:var(--cream); }
+    .cb-days { font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--cream); }
+    .cb-days-label { font-size:11px;color:var(--cream-dim);letter-spacing:0.1em;text-transform:uppercase; }
+
+    /* Timeline */
+    .timeline { position:relative;padding-left:40px; }
+    .timeline::before { content:'';position:absolute;left:11px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--peri),rgba(184,201,232,0.1)); }
+    .ms-item { position:relative;margin-bottom:28px; }
+    .ms-item:last-child { margin-bottom:0; }
+    .ms-dot {
+      position:absolute;left:-33px;top:4px;
+      width:24px;height:24px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:11px;border:2px solid var(--border);background:var(--bg);
+      transition:all 0.3s;
+    }
+    .ms-dot.done { background:var(--success);border-color:var(--success);color:#080810;box-shadow:0 0 12px rgba(158,212,180,0.4); }
+    .ms-dot.current { background:var(--peri);border-color:var(--peri);color:#080810;box-shadow:0 0 12px rgba(184,201,232,0.4); }
+    .ms-card {
+      background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px 24px;
+      transition:border-color 0.15s;
+    }
+    .ms-card.done { opacity:0.7; }
+    .ms-card.current { border-color:rgba(184,201,232,0.3); }
+    .ms-title { font-size:15px;margin-bottom:6px; }
+    .ms-title.done { text-decoration:line-through;color:var(--cream-dim); }
+    .ms-meta { display:flex;gap:16px;align-items:center; }
+    .ms-date-label { font-size:11px;color:var(--cream-dim); }
+    .ms-status-badge { display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;letter-spacing:0.06em; }
+    .badge-done    { background:rgba(158,212,180,0.15);color:var(--success); }
+    .badge-current { background:rgba(184,201,232,0.15);color:var(--peri); }
+    .badge-upcoming{ background:rgba(255,255,255,0.06);color:var(--cream-dim); }
+    .ms-desc { font-size:12px;color:var(--cream-dim);margin-top:8px;line-height:1.6; }
+
+    @media (max-width:768px) { .sidebar{display:none;} .main{padding:32px 20px;} .countdown-banner{flex-direction:column;gap:12px;} }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-mark">EBG HQ <span id="sidebarBiz">Brand HQ</span></div>
+    <a class="nav-item" href="/hq/dashboard.html"><span class="nav-icon">◈</span> Home</a>
+    <a class="nav-item" href="/hq/vault.html"><span class="nav-icon">⊞</span> Brand Vault</a>
+    <a class="nav-item active" href="/hq/roadmap.html"><span class="nav-icon">⊟</span> Roadmap</a>
+    <a class="nav-item" href="/hq/approvals.html"><span class="nav-icon">✓</span> Approvals</a>
+    <a class="nav-item" href="/hq/requests.html"><span class="nav-icon">✉</span> Request Desk</a>
+    <div class="sidebar-spacer"></div>
+    <a class="nav-item nav-signout" onclick="signOut()" href="#"><span class="nav-icon">→</span> Sign Out</a>
+  </nav>
+
+  <main class="main">
+    <p class="page-eyebrow">Roadmap</p>
+    <h1 class="page-title">The path to <em>launch.</em></h1>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progressText">0 of 0 milestones complete</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="countdown-banner" id="countdownBanner">
+      <div>
+        <p class="cb-label">Target Launch Date</p>
+        <p class="cb-date" id="launchDateLabel">—</p>
+      </div>
+      <div style="text-align:right">
+        <p class="cb-days" id="daysLeft">—</p>
+        <p class="cb-days-label">days to go</p>
+      </div>
+    </div>
+
+    <div class="timeline" id="timeline"><p style="color:var(--cream-dim)">Loading roadmap…</p></div>
+  </main>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://krchnbfpqcibmcggjvtm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9dGqi3potpSMF3T7GUh3KA_Vvzsbsnn';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  (async () => {
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session) { window.location.href='/hq/'; return; }
+
+    const { data:client } = await sb.from('clients').select('*').eq('user_id',session.user.id).single();
+    if (!client) return;
+    document.getElementById('sidebarBiz').textContent = client.business_name;
+
+    if (client.launch_date) {
+      const days = Math.ceil((new Date(client.launch_date)-new Date())/86400000);
+      if (days > 0) {
+        document.getElementById('daysLeft').textContent = days;
+        document.getElementById('launchDateLabel').textContent = new Date(client.launch_date).toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'});
+        document.getElementById('countdownBanner').classList.add('show');
+      }
+    }
+
+    const { data:ms } = await sb.from('milestones').select('*').eq('client_id',client.id).order('sort_order');
+    const list = ms || [];
+
+    // Progress
+    const done  = list.filter(m=>m.completed).length;
+    const total = list.length;
+    const pct   = total ? Math.round(done/total*100) : 0;
+    document.getElementById('progressText').textContent = `${done} of ${total} milestones complete`;
+    document.getElementById('progressPct').textContent  = pct+'%';
+    document.getElementById('progressFill').style.width = pct+'%';
+
+    // Timeline
+    const tl = document.getElementById('timeline');
+    if (!list.length) {
+      tl.innerHTML = '<p style="color:var(--cream-dim);font-size:14px">Your project milestones will appear here.</p>';
+      return;
+    }
+
+    // Determine "current" milestone (first incomplete one)
+    const firstIncompleteIdx = list.findIndex(m=>!m.completed);
+
+    tl.innerHTML = list.map((m,i) => {
+      const isCurrent = i === firstIncompleteIdx;
+      const isDone    = m.completed;
+      const dotClass  = isDone ? 'done' : isCurrent ? 'current' : '';
+      const dotIcon   = isDone ? '✓' : isCurrent ? '▶' : '';
+      const cardClass = isDone ? 'done' : isCurrent ? 'current' : '';
+      const badge     = isDone ? 'badge-done' : isCurrent ? 'badge-current' : 'badge-upcoming';
+      const badgeTxt  = isDone ? 'Complete' : isCurrent ? 'In Progress' : 'Upcoming';
+      const date      = m.due_date ? new Date(m.due_date+'T00:00').toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}) : '';
+
+      return `<div class="ms-item">
+        <div class="ms-dot ${dotClass}">${dotIcon}</div>
+        <div class="ms-card ${cardClass}">
+          <p class="ms-title ${isDone?'done':''}">${m.title}</p>
+          <div class="ms-meta">
+            ${date ? `<span class="ms-date-label">${date}</span>` : ''}
+            <span class="ms-status-badge ${badge}">${badgeTxt}</span>
+          </div>
+          ${m.description ? `<p class="ms-desc">${m.description}</p>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  })();
+
+  async function signOut() { await sb.auth.signOut(); window.location.href='/hq/'; }
+</script>
+</body>
+</html>

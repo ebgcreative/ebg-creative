@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBG HQ — Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #080810;
+      --panel:     rgba(255,255,255,0.04);
+      --border:    rgba(255,255,255,0.08);
+      --cream:     #EDE8E2;
+      --cream-dim: rgba(237,232,226,0.55);
+      --peri:      #B8C9E8;
+      --peri-dim:  rgba(184,201,232,0.18);
+      --error:     #E8A0A0;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+    }
+
+    /* Subtle grain overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0;
+    }
+
+    .login-wrap {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 52px 44px 48px;
+      backdrop-filter: blur(24px);
+    }
+
+    .login-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--peri);
+      margin-bottom: 36px;
+    }
+
+    .login-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      font-weight: 300;
+      line-height: 1.15;
+      color: var(--cream);
+      margin-bottom: 8px;
+    }
+    .login-title em { font-style: italic; }
+
+    .login-sub {
+      font-size: 13px;
+      color: var(--cream-dim);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .form-field {
+      margin-bottom: 20px;
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cream-dim);
+      margin-bottom: 8px;
+    }
+
+    .form-field input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px 16px;
+      font-family: 'Jost', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--cream);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .form-field input::placeholder { color: rgba(237,232,226,0.3); }
+    .form-field input:focus {
+      border-color: var(--peri);
+      background: rgba(184,201,232,0.06);
+    }
+
+    .forgot-link {
+      display: block;
+      text-align: right;
+      font-size: 12px;
+      color: var(--cream-dim);
+      text-decoration: none;
+      margin-top: -12px;
+      margin-bottom: 32px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .forgot-link:hover { color: var(--peri); }
+
+    .login-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--peri);
+      color: #080810;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .login-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .login-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .error-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(232,160,160,0.1);
+      border: 1px solid rgba(232,160,160,0.25);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--error);
+      line-height: 1.5;
+    }
+    .error-msg.show { display: block; }
+
+    .reset-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(184,201,232,0.08);
+      border: 1px solid rgba(184,201,232,0.2);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--peri);
+      line-height: 1.5;
+    }
+    .reset-msg.show { display: block; }
+
+    .login-footer {
+      margin-top: 36px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: rgba(237,232,226,0.3);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    /* Loading spinner inside button */
+    .btn-spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(8,8,16,0.3);
+      border-top-color: #080810;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    .btn-spinner.show { display: inline-block; }
+    .btn-text.hide { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 480px) {
+      .login-card { padding: 40px 28px 36px; }
+      .login-title { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <p class="login-mark">EBG Creative</p>
+      <h1 class="login-title">Welcome to<br><em>Brand HQ.</em></h1>
+      <p class="login-sub">Your project space. Sign in to access your dashboard.</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@yourbusiness.com" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <span class="forgot-link" onclick="handleForgot()">Forgot password?</span>
+        <button type="submit" class="login-btn" id="loginBtn">
+          <span class="btn-text">Sign In</span>
+          <span class="btn-spinner" id="loginSpinner"></span>
+        </button>
+      </form>
+
+      <div class="error-msg" id="errorMsg"></div>
+      <div class="reset-msg" id="resetMsg"></div>
+
+      <p class="login-footer">© 2025 EBG Creative. All rights reserved.</p>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://krchnbfpqcibmcggjvtm.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_9dGqi3potpSMF3T7GUh3KA_Vvzsbsnn';
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // If already signed in, redirect
+    (async () => {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session) redirectAfterLogin(session.user);
+    })();
+
+    async function redirectAfterLogin(user) {
+      // Check if admin
+      const { data } = await sb.from('admin_users').select('id').eq('user_id', user.id).single();
+      if (data) {
+        window.location.href = '/hq/admin/';
+      } else {
+        window.location.href = '/hq/dashboard.html';
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      setLoading(true);
+      hideMessages();
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) {
+        showError(friendlyError(error.message));
+        setLoading(false);
+        return;
+      }
+      await redirectAfterLogin(data.user);
+    }
+
+    async function handleForgot() {
+      const email = document.getElementById('email').value.trim();
+      if (!email) {
+        showError('Enter your email address above, then click Forgot password.');
+        return;
+      }
+      hideMessages();
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/hq/reset.html'
+      });
+      if (error) { showError(error.message); return; }
+      document.getElementById('resetMsg').textContent = 'Check your inbox — a reset link is on its way.';
+      document.getElementById('resetMsg').classList.add('show');
+    }
+
+    function setLoading(on) {
+      document.getElementById('loginBtn').disabled = on;
+      document.querySelector('.btn-text').classList.toggle('hide', on);
+      document.getElementById('loginSpinner').classList.toggle('show', on);
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function hideMessages() {
+      document.getElementById('errorMsg').classList.remove('show');
+      document.getElementById('resetMsg').classList.remove('show');
+    }
+
+    function friendlyError(msg) {
+      if (msg.includes('Invalid login')) return 'Incorrect email or password. Please try again.';
+      if (msg.includes('Email not confirmed')) return 'Please confirm your email before signing in.';
+      return msg;
+    }
+  </script>
+</body>
+</html>

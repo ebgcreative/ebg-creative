@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBG HQ — Your Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    :root {
+      --bg:#080810; --bg2:#0d0d1a; --panel:rgba(255,255,255,0.04);
+      --border:rgba(255,255,255,0.08); --cream:#EDE8E2;
+      --cream-dim:rgba(237,232,226,0.55); --peri:#B8C9E8;
+      --peri-dim:rgba(184,201,232,0.15); --success:#9ED4B4; --warn:#E8CDA0;
+    }
+    html,body { height:100%; background:var(--bg); color:var(--cream); font-family:'Jost',sans-serif; font-weight:300; }
+    .layout { display:flex; min-height:100vh; }
+
+    /* Sidebar */
+    .sidebar { width:220px;min-width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:32px 0 24px;position:sticky;top:0;height:100vh;overflow:auto; }
+    .sidebar-mark { font-family:'Cormorant Garamond',serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--peri);padding:0 28px 28px;border-bottom:1px solid var(--border);margin-bottom:24px; }
+    .sidebar-mark span { display:block;font-size:10px;color:var(--cream-dim);margin-top:2px;letter-spacing:0.1em;font-family:'Jost',sans-serif; }
+    .nav-item { display:flex;align-items:center;gap:12px;padding:11px 28px;font-size:13px;color:var(--cream-dim);cursor:pointer;transition:all 0.15s;text-decoration:none;border-left:2px solid transparent; }
+    .nav-item:hover { color:var(--cream);background:rgba(255,255,255,0.03); }
+    .nav-item.active { color:var(--peri);border-left-color:var(--peri);background:var(--peri-dim); }
+    .nav-icon { font-size:15px;width:18px;text-align:center; }
+    .sidebar-spacer { flex:1; }
+    .nav-signout { color:rgba(237,232,226,0.3);font-size:12px; }
+    .nav-signout:hover { color:var(--cream-dim); }
+
+    /* Main */
+    .main { flex:1;padding:48px 52px;overflow:auto; }
+    .welcome-row { margin-bottom:48px; }
+    .welcome-eyebrow { font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--peri);margin-bottom:12px; }
+    .welcome-title { font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;line-height:1.1;margin-bottom:12px; }
+    .welcome-title em { font-style:italic; }
+    .welcome-phase { display:inline-flex;align-items:center;gap:10px;padding:6px 16px;background:var(--peri-dim);border:1px solid rgba(184,201,232,0.2);border-radius:20px;font-size:12px;color:var(--peri);letter-spacing:0.08em; }
+    .phase-dot { width:6px;height:6px;border-radius:50%;background:var(--peri);box-shadow:0 0 8px var(--peri); }
+
+    /* Stats */
+    .stats-row { display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px; }
+    .stat-card { background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px 28px; }
+    .stat-label { font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--cream-dim);margin-bottom:10px; }
+    .stat-val { font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300; }
+
+    /* Two col layout */
+    .two-col { display:grid;grid-template-columns:1fr 340px;gap:24px; }
+
+    /* Milestones */
+    .panel { background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:24px; }
+    .panel-title { font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--cream-dim);margin-bottom:20px; }
+    .milestone-row { display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05); }
+    .milestone-row:last-child { border-bottom:none; }
+    .ms-check { width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0; }
+    .ms-check.done { background:var(--success);border-color:var(--success);color:#080810; }
+    .ms-title-text { flex:1;font-size:13px; }
+    .ms-title-text.done { color:var(--cream-dim);text-decoration:line-through; }
+    .ms-date { font-size:11px;color:var(--cream-dim); }
+
+    /* Updates feed */
+    .update-item { padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05); }
+    .update-item:last-child { border-bottom:none; }
+    .update-msg { font-size:13px;color:var(--cream);margin-bottom:4px;line-height:1.5; }
+    .update-meta { font-size:11px;color:var(--cream-dim); }
+    .update-badge { display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;letter-spacing:0.06em;margin-right:6px; }
+    .badge-milestone { background:rgba(184,201,232,0.15);color:var(--peri); }
+    .badge-approval  { background:rgba(232,205,160,0.15);color:var(--warn); }
+    .badge-file      { background:rgba(158,212,180,0.15);color:var(--success); }
+    .badge-general   { background:rgba(255,255,255,0.06);color:var(--cream-dim); }
+
+    /* Quick actions */
+    .quick-actions { display:flex;flex-direction:column;gap:10px; }
+    .action-card { display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--panel);border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--cream);transition:all 0.15s;cursor:pointer; }
+    .action-card:hover { border-color:rgba(184,201,232,0.3);background:var(--peri-dim); }
+    .action-icon { font-size:18px;width:24px;text-align:center; }
+    .action-label { font-size:13px; }
+    .action-sub { font-size:11px;color:var(--cream-dim);margin-top:2px; }
+
+    /* Launch countdown */
+    .countdown-card { background:linear-gradient(135deg,rgba(184,201,232,0.08),rgba(184,201,232,0.03));border:1px solid rgba(184,201,232,0.15);border-radius:12px;padding:28px;text-align:center; }
+    .countdown-label { font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--peri);margin-bottom:12px; }
+    .countdown-val { font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:var(--cream); }
+    .countdown-unit { font-size:12px;color:var(--cream-dim);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px; }
+
+    @media (max-width:1100px) { .stats-row { grid-template-columns:repeat(2,1fr); } .two-col { grid-template-columns:1fr; } }
+    @media (max-width:768px) { .sidebar { display:none; } .main { padding:32px 20px; } .welcome-title { font-size:32px; } }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="sidebar-mark">EBG HQ <span id="sidebarBiz">Brand HQ</span></div>
+    <a class="nav-item active" href="/hq/dashboard.html"><span class="nav-icon">◈</span> Home</a>
+    <a class="nav-item" href="/hq/vault.html"><span class="nav-icon">⊞</span> Brand Vault</a>
+    <a class="nav-item" href="/hq/roadmap.html"><span class="nav-icon">⊟</span> Roadmap</a>
+    <a class="nav-item" href="/hq/approvals.html"><span class="nav-icon">✓</span> Approvals</a>
+    <a class="nav-item" href="/hq/requests.html"><span class="nav-icon">✉</span> Request Desk</a>
+    <div class="sidebar-spacer"></div>
+    <a class="nav-item nav-signout" onclick="signOut()" href="#"><span class="nav-icon">→</span> Sign Out</a>
+  </nav>
+
+  <main class="main">
+    <div class="welcome-row">
+      <p class="welcome-eyebrow" id="welcomeEyebrow">Your Brand HQ</p>
+      <h1 class="welcome-title" id="welcomeTitle">Welcome back,<br><em>loading…</em></h1>
+      <div class="welcome-phase" id="phaseTag"><span class="phase-dot"></span> <span id="phaseLabel">—</span></div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <p class="stat-label">Milestones Complete</p>
+        <p class="stat-val" id="statDone">—</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Pending Approvals</p>
+        <p class="stat-val" id="statPend">—</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Brand Assets</p>
+        <p class="stat-val" id="statAssets">—</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <!-- Milestones -->
+        <div class="panel">
+          <p class="panel-title">Your Roadmap</p>
+          <div id="milestonesWrap"><p style="font-size:13px;color:var(--cream-dim)">Loading…</p></div>
+        </div>
+
+        <!-- Updates -->
+        <div class="panel">
+          <p class="panel-title">Latest Updates</p>
+          <div id="updatesWrap"><p style="font-size:13px;color:var(--cream-dim)">Loading…</p></div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Countdown -->
+        <div class="countdown-card" id="countdownCard" style="display:none;margin-bottom:24px">
+          <p class="countdown-label">Days Until Launch</p>
+          <p class="countdown-val" id="countdownVal">—</p>
+          <p class="countdown-unit">days</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="panel">
+          <p class="panel-title">Quick Actions</p>
+          <div class="quick-actions">
+            <a class="action-card" href="/hq/vault.html">
+              <span class="action-icon">⊞</span>
+              <div><p class="action-label">Brand Vault</p><p class="action-sub">Access logos, fonts & colours</p></div>
+            </a>
+            <a class="action-card" href="/hq/approvals.html">
+              <span class="action-icon">✓</span>
+              <div><p class="action-label">Approvals</p><p class="action-sub">Review pending work</p></div>
+            </a>
+            <a class="action-card" href="/hq/requests.html">
+              <span class="action-icon">✉</span>
+              <div><p class="action-label">Send a Request</p><p class="action-sub">Ask a question or submit changes</p></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://krchnbfpqcibmcggjvtm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_9dGqi3potpSMF3T7GUh3KA_Vvzsbsnn';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  (async () => {
+    const { data:{ session } } = await sb.auth.getSession();
+    if (!session) { window.location.href='/hq/'; return; }
+
+    // Check admin — redirect admins to their panel
+    const { data:admin } = await sb.from('admin_users').select('id').eq('user_id',session.user.id).single();
+    if (admin) { window.location.href='/hq/admin/'; return; }
+
+    // Get client record
+    const { data:client } = await sb.from('clients').select('*').eq('user_id',session.user.id).single();
+    if (!client) {
+      document.getElementById('welcomeTitle').innerHTML = `Welcome. <em>Setting things up.</em>`;
+      document.getElementById('phaseLabel').textContent = 'Getting Started';
+      return;
+    }
+
+    // Populate header
+    document.getElementById('sidebarBiz').textContent = client.business_name;
+    document.getElementById('welcomeTitle').innerHTML = `Welcome back,<br><em>${client.business_name}.</em>`;
+    document.getElementById('phaseLabel').textContent = client.project_phase || 'Onboarding';
+
+    // Countdown
+    if (client.launch_date) {
+      const days = Math.ceil((new Date(client.launch_date) - new Date()) / 86400000);
+      if (days > 0) {
+        document.getElementById('countdownVal').textContent = days;
+        document.getElementById('countdownCard').style.display = 'block';
+      }
+    }
+
+    // Load milestones, approvals, assets, updates in parallel
+    const [{ data:ms }, { data:approvals }, { data:assets }, { data:updates }] = await Promise.all([
+      sb.from('milestones').select('*').eq('client_id',client.id).order('sort_order'),
+      sb.from('approvals').select('id').eq('client_id',client.id).eq('status','pending'),
+      sb.from('brand_assets').select('id').eq('client_id',client.id),
+      sb.from('updates').select('*').eq('client_id',client.id).order('created_at',{ascending:false}).limit(8)
+    ]);
+
+    const msList    = ms       || [];
+    const appList   = approvals|| [];
+    const assetList = assets   || [];
+    const updList   = updates  || [];
+
+    document.getElementById('statDone').textContent   = msList.filter(m=>m.completed).length + '/' + msList.length;
+    document.getElementById('statPend').textContent   = appList.length;
+    document.getElementById('statAssets').textContent = assetList.length;
+
+    // Milestones
+    const msWrap = document.getElementById('milestonesWrap');
+    if (!msList.length) {
+      msWrap.innerHTML = '<p style="font-size:13px;color:var(--cream-dim)">Milestones will appear here once your project starts.</p>';
+    } else {
+      msWrap.innerHTML = msList.map(m => `
+        <div class="milestone-row">
+          <div class="ms-check ${m.completed?'done':''}">${m.completed?'✓':''}</div>
+          <span class="ms-title-text ${m.completed?'done':''}">${m.title}</span>
+          <span class="ms-date">${m.due_date ? new Date(m.due_date+'T00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric'}) : ''}</span>
+        </div>`).join('');
+    }
+
+    // Updates
+    const updWrap = document.getElementById('updatesWrap');
+    if (!updList.length) {
+      updWrap.innerHTML = '<p style="font-size:13px;color:var(--cream-dim)">No updates yet — check back soon.</p>';
+    } else {
+      updWrap.innerHTML = updList.map(u => `
+        <div class="update-item">
+          <p class="update-msg"><span class="update-badge badge-${u.update_type}">${u.update_type}</span>${u.message}</p>
+          <p class="update-meta">${new Date(u.created_at).toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'})}</p>
+        </div>`).join('');
+    }
+  })();
+
+  async function signOut() { await sb.auth.signOut(); window.location.href='/hq/'; }
+</script>
+</body>
+</html>

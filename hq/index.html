@@ -245,9 +245,8 @@
     })();
 
     async function redirectAfterLogin(user) {
-      // Check if admin
-      const { data } = await sb.from('admin_users').select('id').eq('user_id', user.id).single();
-      if (data) {
+      // Check if admin via app_metadata (set server-side, not RLS-gated)
+      if (user.app_metadata && user.app_metadata.is_admin) {
         window.location.href = '/hq/admin/';
       } else {
         window.location.href = '/hq/dashboard.html';

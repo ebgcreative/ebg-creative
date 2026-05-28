@@ -386,8 +386,7 @@
   (async () => {
     const { data:{ session } } = await sb.auth.getSession();
     if (!session) { window.location.href = '/hq/'; return; }
-    const { data:admin } = await sb.from('admin_users').select('id').eq('user_id',session.user.id).single();
-    if (!admin) { window.location.href = '/hq/dashboard.html'; return; }
+    if (!session.user.app_metadata?.is_admin) { window.location.href = '/hq/dashboard.html'; return; }
 
     const params = new URLSearchParams(window.location.search);
     clientId = params.get('id');

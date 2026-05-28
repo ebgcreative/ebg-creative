@@ -179,8 +179,7 @@
     if (!session) { window.location.href='/hq/'; return; }
 
     // Check admin — redirect admins to their panel
-    const { data:admin } = await sb.from('admin_users').select('id').eq('user_id',session.user.id).single();
-    if (admin) { window.location.href='/hq/admin/'; return; }
+    if (session.user.app_metadata?.is_admin) { window.location.href='/hq/admin/'; return; }
 
     // Get client record
     const { data:client } = await sb.from('clients').select('*').eq('user_id',session.user.id).single();

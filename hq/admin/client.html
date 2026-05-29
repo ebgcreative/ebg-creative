@@ -632,19 +632,32 @@
   async function sendInvite() {
     const email = document.getElementById('inv-email').value.trim();
     if (!email) return;
+    if (!clientId) { showToast('Save the client profile first','error'); return; }
+
     const statusEl = document.getElementById('inviteStatus');
-    statusEl.style.display='block'; statusEl.textContent='Sending…';
+    statusEl.style.display='block'; statusEl.textContent='Sending invite…'; statusEl.style.color='var(--cream-dim)';
 
-    // Send magic link / invite email via Supabase Admin
-    // Note: inviteUserByEmail requires service role key — this is a placeholder
-    // In production, call a Supabase Edge Function that uses the service role
-    const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.origin+'/hq/' } });
-    if (error) { statusEl.textContent='Error: '+error.message; statusEl.style.color='var(--error)'; return; }
-    statusEl.textContent = `Magic link sent to ${email}. They can set a password after signing in.`;
+    const { data:{ session } } = await sb.auth.getSession();
+
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/invite-client`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({ email, client_id: clientId })
+    });
+
+    const json = await res.json();
+    if (!res.ok || json.error) {
+      statusEl.textContent = 'Error: ' + (json.error || 'Something went wrong');
+      statusEl.style.color = 'var(--error)';
+      return;
+    }
+    statusEl.textContent = json.message;
     statusEl.style.color = 'var(--success)';
-
-    // Link this user to the client record once they sign up (done via trigger or admin)
-    showToast('Invite sent to '+email);
+    showToast('Invite sent to ' + email);
   }
 
   async function deleteClient() {

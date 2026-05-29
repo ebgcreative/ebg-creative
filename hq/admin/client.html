@@ -400,12 +400,13 @@
 
   function renderServices() {
     const grid = document.getElementById('servicesGrid');
-    grid.innerHTML = SERVICES.map(s => `
-      <label class="service-check${selectedServices.includes(s) ? ' checked' : ''}" onclick="toggleService(this,'${s}')">
-        <input type="checkbox" ${selectedServices.includes(s)?'checked':''}>
-        <span class="check-icon">${selectedServices.includes(s)?'✓':''}</span>
+    grid.innerHTML = SERVICES.map(s => {
+      const checked = selectedServices.includes(s);
+      return `<div class="service-check${checked ? ' checked' : ''}" onclick="toggleService(this,'${s}')">
+        <span class="check-icon">${checked ? '✓' : ''}</span>
         <span>${s}</span>
-      </label>`).join('');
+      </div>`;
+    }).join('');
   }
 
   function toggleService(el, name) {

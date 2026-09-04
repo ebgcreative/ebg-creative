@@ -5,16 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- ── Primary SEO ─────────────────────────────────────────────── -->
-<title>EBG Creative — Web Design, Brand & Social Media for Small Businesses</title>
+<title>EBG Creative — Web Design, Brand & Social Media</title>
 <meta name="description" content="EBG Creative helps small businesses and startups show up with intention. Web design, social media management, and brand strategy — built to grow with you.">
 <meta name="author" content="EBG Creative">
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "EBG Creative",
+  "url": "https://www.ebgcreative.ca",
+  "logo": "https://www.ebgcreative.ca/favicon.png",
+  "image": "https://www.ebgcreative.ca/og-image.jpg",
+  "description": "EBG Creative helps small businesses and startups show up with intention. Web design, social media management, and brand strategy built to grow with you.",
+  "email": "hello@ebgcreative.ca",
+  "areaServed": {"@type": "Country", "name": "Canada"},
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "EBG Creative Services",
+    "itemListElement": [
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Social Media Management"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Web Design"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Brand Strategy"}},
+      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Content Strategy"}}
+    ]
+  },
+  "sameAs": ["https://www.instagram.com/ebg.creative"]
+}
+</script>
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://ebgcreative.ca/">
+<link rel="canonical" href="https://www.ebgcreative.ca/">
 
 <!-- ── Open Graph (iMessage, WhatsApp, Slack, Facebook) ──────── -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="EBG Creative">
-<meta property="og:url" content="https://ebgcreative.ca/">
+<meta property="og:url" content="https://www.ebgcreative.ca/">
 <meta property="og:title" content="EBG Creative — Web Design, Brand & Social Media">
 <meta property="og:description" content="Small business branding that actually looks like you. Web design, social media management, and brand strategy.">
 <meta property="og:image" content="https://ebgcreative.ca/og-image.jpg">
@@ -59,7 +84,22 @@
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400&family=Fraunces:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400&family=Abril+Fatface&family=Josefin+Sans:wght@100;300;400&family=EB+Garamond:ital,wght@0,400;1,400&family=Cinzel:wght@400;600&family=Raleway:wght@200;300;400&family=Bodoni+Moda:ital,wght@0,400;1,400;1,600&family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500&family=Cardo:ital,wght@0,400;1,400&family=Oswald:wght@200;300&family=Archivo:wght@300;400;600&family=Tenor+Sans&family=Italiana&display=swap" rel="stylesheet">
+<!-- Core fonts: 2 families only -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<script>
+(function(){
+  var _loaded=false;
+  window._loadPlaygroundFonts=function(){
+    if(_loaded)return; _loaded=true;
+    var l=document.createElement('link');
+    l.rel='stylesheet';
+    l.href='https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400&family=Fraunces:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400&family=Abril+Fatface&family=Josefin+Sans:wght@100;300;400&family=EB+Garamond:ital,wght@0,400;1,400&family=Cinzel:wght@400;600&family=Raleway:wght@200;300;400&family=Bodoni+Moda:ital,wght@0,400;1,400;1,600&family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500&family=Cardo:ital,wght@0,400;1,400&family=Oswald:wght@200;300&family=Archivo:wght@300;400;600&family=Tenor+Sans&family=Italiana&display=swap';
+    document.head.appendChild(l);
+  };
+})();
+</script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -2144,7 +2184,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
-    <p class="footer-copy">© 2025 EBG Creative. All rights reserved.</p>
+    <p class="footer-copy">© 2026 EBG Creative. All rights reserved.</p>
   </footer>
 </div>
 
@@ -2223,7 +2263,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
-    <p class="footer-copy">© 2025 EBG Creative. All rights reserved.</p>
+    <p class="footer-copy">© 2026 EBG Creative. All rights reserved.</p>
   </footer>
 </div>
 
@@ -2412,7 +2452,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
-    <p class="footer-copy">© 2025 EBG Creative. All rights reserved.</p>
+    <p class="footer-copy">© 2026 EBG Creative. All rights reserved.</p>
   </footer>
 </div>
 
@@ -2603,7 +2643,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
-    <p class="footer-copy">© 2025 EBG Creative. All rights reserved.</p>
+    <p class="footer-copy">© 2026 EBG Creative. All rights reserved.</p>
   </footer>
 </div>
 
@@ -2696,7 +2736,7 @@ nav.scrolled .nav-hamburger span { background: var(--night-navy); }
       <li><a href="https://www.instagram.com/ebg.creative" target="_blank" rel="noopener">Instagram</a></li>
       <li><a href="mailto:hello@ebgcreative.ca">hello@ebgcreative.ca</a></li>
     </ul>
-    <p class="footer-copy">© 2025 EBG Creative. All rights reserved.</p>
+    <p class="footer-copy">© 2026 EBG Creative. All rights reserved.</p>
   </footer>
 </div>
 
@@ -5121,7 +5161,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof _origShowPage === 'function') {
     window.showPage = function(id, linkEl) {
       const r = _origShowPage(id, linkEl);
-      if (id === 'playground') setTimeout(initPlayground, 80);
+      if(window._loadPlaygroundFonts)window._loadPlaygroundFonts(); if (id === 'playground') setTimeout(initPlayground, 80);
       return r;
     };
   }
